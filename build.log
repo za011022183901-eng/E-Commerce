@@ -1,0 +1,127 @@
+
+> shop-mart@0.1.0 build
+> next build --turbopack
+
+   ▲ Next.js 15.5.3 (Turbopack)
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 182ms
+ ✓ Compiled successfully in 9.5s
+   Linting and checking validity of types ...
+
+Failed to compile.
+
+./src/app/(pages)/api/auth/[...nextauth]/route.ts
+2:10  Warning: 'FailedLoginResponse' is defined but never used.  @typescript-eslint/no-unused-vars
+2:31  Warning: 'SuccessLoginResponse' is defined but never used.  @typescript-eslint/no-unused-vars
+4:8  Warning: 'CredentialsProvider' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/(pages)/brands/page.tsx
+41:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/brands/[brandid]/page.tsx
+53:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/card/page.tsx
+3:17  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+14:30  Warning: 'getCart' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+29:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+46:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+59:13  Warning: 'data' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+61:14  Warning: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+72:11  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+86:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+153:76  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+156:34  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+
+./src/app/(pages)/categories/page.tsx
+41:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/categories/[categories]/page.tsx
+51:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/login/_Component/LoginForm/LoginForm.tsx
+4:10  Warning: 'useParams' is defined but never used.  @typescript-eslint/no-unused-vars
+23:19  Warning: 'Search' is defined but never used.  @typescript-eslint/no-unused-vars
+166:8  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/(pages)/products/page.tsx
+7:3  Warning: 'CardDescription' is defined but never used.  @typescript-eslint/no-unused-vars
+74:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/products/[productid]/page.tsx
+11:9  Error: 'productid' is never reassigned. Use 'const' instead.  prefer-const
+
+./src/app/(pages)/profile/accountUser/page.tsx
+4:38  Warning: 'Phone' is defined but never used.  @typescript-eslint/no-unused-vars
+84:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(pages)/profile/allorders/page.tsx
+18:40  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+75:31  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+107:46  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+113:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/register/page.tsx
+94:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/(pages)/Wishlist/page.tsx
+25:30  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+43:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/forgot-password/page.tsx
+65:14  Warning: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/layout.tsx
+4:10  Warning: 'Button' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/not-found.tsx
+17:32  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+17:55  Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`.  react/no-unescaped-entities
+
+./src/app/reset-password/page.tsx
+80:14  Warning: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/verify-reset-code/page.tsx
+66:14  Warning: 'err' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/auth.ts
+1:8  Warning: 'NextAuth' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/AddAndRemoveWishlist/page.tsx
+13:11  Warning: 'cartData' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+14:17  Warning: 'session' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/AddToCard/AdToCard.tsx
+3:10  Warning: 'use' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/CachOut/CachOut.tsx
+95:19  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/CeckOut/CeckOut.tsx
+75:21  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/ProductGallery/ProductGallery.tsx
+27:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+50:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/ui/Navbar/Navbar.tsx
+56:6  Warning: React Hook useEffect has a missing dependency: 'userName'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+128:25  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+144:25  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+259:23  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+275:23  Error: Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong.  @typescript-eslint/no-non-null-asserted-optional-chain
+
+./src/interfaces/index.ts
+1:10  Warning: 'products' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/middleware.ts
+16:11  Error: 'redirectUrl' is never reassigned. Use 'const' instead.  prefer-const
+
+./src/types/next-auth.d.ts
+3:8  Warning: 'NextAuth' is defined but never used.  @typescript-eslint/no-unused-vars
+5:10  Warning: 'JWT' is defined but never used.  @typescript-eslint/no-unused-vars
+30:13  Error: An interface declaring no members is equivalent to its supertype.  @typescript-eslint/no-empty-object-type
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules

@@ -1,0 +1,119 @@
+
+> shop-mart@0.1.0 build
+> next build --turbopack
+
+   ▲ Next.js 15.5.3 (Turbopack)
+   - Environments: .env.local, .env
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 210ms
+ ✓ Compiled successfully in 8.8s
+   Linting and checking validity of types ...
+
+./src/app/(pages)/brands/page.tsx
+41:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/brands/[brandid]/page.tsx
+53:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/card/page.tsx
+86:25  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/categories/page.tsx
+41:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/categories/[categories]/page.tsx
+51:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/products/page.tsx
+74:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/profile/allorders/page.tsx
+113:21  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/app/(pages)/Wishlist/page.tsx
+43:17  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/ProductGallery/ProductGallery.tsx
+27:11  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+50:19  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./src/components/ui/Navbar/Navbar.tsx
+56:6  Warning: React Hook useEffect has a missing dependency: 'userName'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+   Generating static pages (0/19) ...
+   Generating static pages (4/19) 
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+   Generating static pages (9/19) 
+   Generating static pages (14/19) 
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+[TypeError: fetch failed] {
+  [cause]: [Error [ConnectTimeoutError]: Connect Timeout Error (attempted address: ecommerce.routemisr.com:443, timeout: 10000ms)] {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+ ✓ Generating static pages (19/19)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                         Size  First Load JS  Revalidate  Expire
+┌ ○ /                            1.33 kB         214 kB
+├ ○ /_not-found                      0 B         175 kB
+├ ƒ /api/auth/[...nextauth]          0 B            0 B
+├ ƒ /api/get-cart                    0 B            0 B
+├ ƒ /api/get-seshlist                0 B            0 B
+├ ○ /brands                          0 B         175 kB         10m      1y
+├ ƒ /brands/[brandid]                0 B         175 kB
+├ ○ /card                        8.51 kB         184 kB
+├ ○ /categories                      0 B         175 kB        ≈17m      1y
+├ ƒ /categories/[categories]         0 B         175 kB
+├ ○ /forgot-password             2.39 kB         246 kB
+├ ○ /login                       3.24 kB         285 kB
+├ ○ /products                       2 kB         177 kB         10m      1y
+├ ƒ /products/[productid]        10.6 kB         186 kB
+├ ○ /profile/accountUser         6.45 kB         221 kB
+├ ○ /profile/allorders           2.85 kB         217 kB
+├ ○ /register                    5.45 kB         287 kB
+├ ○ /reset-password              2.65 kB         246 kB
+├ ○ /verify-reset-code           2.52 kB         246 kB
+└ ○ /Wishlist                    3.01 kB         178 kB
++ First Load JS shared by all     193 kB
+  ├ chunks/21abcef6f0b95d6f.js     13 kB
+  ├ chunks/690da9955fcbe971.js   14.4 kB
+  ├ chunks/8082ab48faca5ea1.js   17.2 kB
+  ├ chunks/d04efc723d1783d5.js   59.2 kB
+  ├ chunks/d91fe9aa516132e1.js   21.5 kB
+  ├ chunks/f1b5ee68454a6ab6.css    17 kB
+  └ other shared chunks (total)  50.9 kB
+
+
+ƒ Middleware                       60 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
