@@ -92,9 +92,10 @@ const router = useRouter();
 
 
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     toast.error("Something went wrong. Try again later.");
     console.error(error);
+
   } finally {
     setLoading(false);
   }

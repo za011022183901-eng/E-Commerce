@@ -72,9 +72,10 @@ export default function CeckOut({ cartId }: { cartId: string }) {
 
 
       
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Something went wrong. Try again later.");
       console.error(error);
+
     } finally {
       setLoading(false);
     }

@@ -10,6 +10,8 @@ import {
 import { CategoryI } from "@/interfaces";
 import { ArrowRightIcon } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function Categories() {
   const response = await fetch("https://ecommerce.routemisr.com/api/v1/categories", {
     next: { revalidate: 10 * 100 }, // كل 10 دقائق

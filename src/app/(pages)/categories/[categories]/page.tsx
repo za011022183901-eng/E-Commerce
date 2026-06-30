@@ -10,6 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+export const dynamic = "force-dynamic";
+
 export default async function CategoryDetails({ params }: { params: Params }) {
   const { categories } = params;
 

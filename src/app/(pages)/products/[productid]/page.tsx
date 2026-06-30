@@ -7,6 +7,8 @@ import Whilshit from '@/components/AddAndRemoveWishlist/page';
 import ProductGallery from '@/components/ProductGallery/ProductGallery';
 // استيراد المعرض الجديد (عدل المسار حسب مكان حفظك للملف)
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductsDetails({ params }: { params: Params }) {
   let { productid } = params;
 

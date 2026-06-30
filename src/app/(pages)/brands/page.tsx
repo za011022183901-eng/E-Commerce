@@ -9,6 +9,8 @@ import {
 import { CategoryI } from "@/interfaces";
 import { ArrowUpRight } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function Brands() {
   // جلب بيانات الماركات (Brands)
   const response = await fetch("https://ecommerce.routemisr.com/api/v1/brands", {

@@ -121,14 +121,9 @@
   }
 
 h1{
-  @apply text-3xl font-semibold
+  @apply text-2xl font-medium;
+}
 }
 
-
-h1{
-  @apply text-2xl font-medium
-}
-  
-}
 
 

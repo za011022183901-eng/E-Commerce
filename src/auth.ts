@@ -6,6 +6,7 @@ import { FailedLoginResponse, SuccessLoginResponse } from "./interfaces";
 
 
 export const authOption : AuthOptions= {
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 
   providers: [
     CredentialsProvider({

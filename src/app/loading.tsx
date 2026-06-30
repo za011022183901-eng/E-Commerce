@@ -1,4 +1,4 @@
-import { SplinePointerIcon } from 'lucide-react'
+import { SplineIcon } from 'lucide-react'
 import React from 'react'
 
 export default function Loading() {
@@ -11,7 +11,7 @@ export default function Loading() {
       {/* Text */}
       <h1 className="text-2xl font-bold flex items-center gap-3 text-gray-800 animate-pulse">
         shopMart
-        <SplinePointerIcon className="w-6 h-6 text-blue-500 animate-bounce" />
+        <SplineIcon className="w-6 h-6 text-blue-500 animate-bounce" />
       </h1>
       
     </div>

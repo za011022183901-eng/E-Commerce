@@ -141,9 +141,7 @@ export default function Navbar() {
                   <Link href="/card">
                     <ShoppingCart
                       className={`w-6 h-6 transition ${
-                        cartData?.numOfCartItems! > 0
-                          ? "text-green-500 fill-green-500"
-                          : "text-gray-700 hover:text-green-500"
+                      (cartData?.numOfCartItems ?? 0) > 0 ? "text-green-500 fill-green-500" : "text-gray-700 hover:text-green-500"
                       }`}
                     />
                   </Link>
@@ -256,7 +254,7 @@ export default function Navbar() {
                 <Link href={"/Wishlist"}>
                   <HeartIcon
                     className={`w-6 h-6 transition ${
-                      wishlistData?.count! > 0
+                      (wishlistData?.count ?? 0) > 0
                         ? "text-red-500 fill-red-500"
                         : "text-gray-500 hover:text-red-400"
                     }`}

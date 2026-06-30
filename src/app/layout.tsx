@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/ui/Navbar/Navbar";
@@ -7,11 +6,6 @@ import Footer from "@/components/Footer/Footer";
 import { Toaster } from "react-hot-toast";
 import GetCartContext from "@/components/context/CartContext";
 import MySassion from "@/components/mySession/MySassion";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +19,9 @@ export default function RootLayout({
     // 1. أضفنا الخاصية هنا للـ html
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className="font-sans antialiased"
         // 2. وأضفناها هنا للـ body لتجنب إضافات المتصفح مثل ColorZilla
-        suppressHydrationWarning={true} 
+        suppressHydrationWarning={true}
       >
         <MySassion>
           <GetCartContext>

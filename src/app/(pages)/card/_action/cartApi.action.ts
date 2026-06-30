@@ -139,9 +139,10 @@ export async function createCheckoutSessionVisa2(
   shippingAddress: { details: string; city: string; phone: string }
 ) {
   const token = await getUserToken();
+  const appUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
 
   const response = await fetch(
-    `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=http://localhost:3000`,
+    `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${encodeURIComponent(appUrl)}`,
     {
       method: "POST",
       headers: {

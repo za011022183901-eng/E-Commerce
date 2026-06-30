@@ -13,6 +13,8 @@ import AddToCart from "@/components/AddToCard/AdToCard";
 import AddAndRemoveWishlist from "@/components/AddAndRemoveWishlist/page";
 import { StarIcon } from 'lucide-react';
 
+export const dynamic = "force-dynamic";
+
 export default async function Products() {
   // جلب البيانات من رابط Route API الصحيح
   const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", {
@@ -135,7 +137,6 @@ export default async function Products() {
     </div>
   );
 }
-
 
 
 
