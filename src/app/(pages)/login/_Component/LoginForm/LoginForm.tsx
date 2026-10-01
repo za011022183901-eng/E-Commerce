@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,6 @@ const formSchema = z.object({
 type FormFields = z.infer<typeof formSchema>;
 
 export function LoginForm() {
-  const router = useRouter();
   const { update: updateSession } = useSession();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -35,18 +34,28 @@ export function LoginForm() {
     try {
       const result = await signIn("credentials", { ...values, redirect: false });
       if (result?.ok) {
-        await updateSession();
+        const session = await updateSession();
+        if (!session?.user?.email) {
+          const message = "Your sign-in was accepted, but the session could not be saved. Please try again.";
+          setErrorMessage(message);
+          toast.error(message);
+          return;
+        }
+
         toast.success("Welcome back! ✨");
         const requestedUrl = searchParams.get("callBackUrl") ?? "/products";
         const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/products";
-        router.replace(callbackUrl);
-        router.refresh();
+        window.location.assign(callbackUrl);
       }
       else { 
         const message = result?.error || "Incorrect email or password."; 
         setErrorMessage(message); 
         toast.error(message); 
       }
+    } catch {
+      const message = "We couldn't reach the sign-in service. Please try again.";
+      setErrorMessage(message);
+      toast.error(message);
     } finally { 
       setIsLoading(false); 
     }
