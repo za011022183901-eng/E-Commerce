@@ -38,7 +38,9 @@ export function LoginForm() {
         window.location.assign(result.url ?? callbackUrl);
       }
       else { 
-        const message = result?.error || "Incorrect email or password."; 
+        const message = result?.error === "CredentialsSignin"
+          ? "The sign-in service could not verify this account. Check the details or try again shortly."
+          : "Unable to complete sign-in. Please try again.";
         setErrorMessage(message); 
         toast.error(message); 
       }

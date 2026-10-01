@@ -1,7 +1,16 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-import { FailedLoginResponse, SuccessLoginResponse } from "./interfaces";
+import { SuccessLoginResponse } from "./interfaces";
+
+function isSuccessLoginResponse(payload: unknown): payload is SuccessLoginResponse {
+  if (!payload || typeof payload !== "object") return false;
+  const candidate = payload as Record<string, unknown>;
+  return typeof candidate.token === "string"
+    && candidate.token.length > 0
+    && !!candidate.user
+    && typeof candidate.user === "object";
+}
 
 
 
@@ -21,36 +30,47 @@ export const authOption: NextAuthConfig = {
       },
 
       async authorize(credentials) {
+        const email = typeof credentials?.email === "string" ? credentials.email.trim() : "";
+        const password = typeof credentials?.password === "string" ? credentials.password : "";
+        if (!email || !password) return null;
 
-        const response = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signin", {
+        let response: Response;
+        try {
+          response = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signin", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: credentials?.email,
-              password: credentials?.password,
-            }),
-          }
-        );
+            headers: { "Content-Type": "application/json" },
+            cache: "no-store",
+            body: JSON.stringify({ email, password }),
+          });
+        } catch (error) {
+          console.error("[auth] Sign-in service request failed:", error);
+          return null;
+        }
 
-        const payload : SuccessLoginResponse | FailedLoginResponse  = await response.json();
+        let payload: unknown;
+        try {
+          payload = await response.json();
+        } catch (error) {
+          console.error("[auth] Sign-in service returned invalid JSON:", response.status, error);
+          return null;
+        }
 
-           if("token" in payload){
+        if (!isSuccessLoginResponse(payload)) {
+          const errorMessage = payload && typeof payload === "object" && "message" in payload
+            ? payload.message
+            : "unexpected response format";
+          console.error("[auth] Sign-in service returned no usable account:", response.status, errorMessage);
+          return null;
+        }
 
-               return {
-
-            id:payload.user.email,
-            user: payload.user ,
-            token:  payload.token ,
-             email: payload.user.email,                      
-                      };
-           }else{
-
-            throw new Error (payload.message)
-           }
-
-      
+        const userEmail = typeof payload.user.email === "string" ? payload.user.email.trim() || email : email;
+        return {
+          id: userEmail,
+          name: payload.user.name || userEmail.split("@")[0],
+          email: userEmail,
+          user: { ...payload.user, email: userEmail },
+          token: payload.token,
+        };
       }
 
     })
@@ -62,21 +82,29 @@ export const authOption: NextAuthConfig = {
 callbacks: {
   jwt: ({ token, user }) => {
     if (user) {
-      // next-auth v5 types are flexible here; we keep the same shape you use in the project
-      token.user = (user as any).user;
-      token.token = (user as any).token;
+      const authenticatedUser = user as typeof user & {
+        user?: SuccessLoginResponse["user"];
+        token?: string;
+      };
+      token.user = authenticatedUser.user ?? {
+        name: authenticatedUser.name ?? "",
+        email: authenticatedUser.email ?? "",
+        role: "user",
+      };
+      if (authenticatedUser.token) token.token = authenticatedUser.token;
     }
     return token;
   },
 
   session: ({ session, token }) => {
-    // Ensure session.user always exists to avoid runtime crashes
-    (session as any).user = (token as any).user;
+    const authenticatedUser = token.user as SuccessLoginResponse["user"] | undefined;
+    if (authenticatedUser) session.user = authenticatedUser as typeof session.user;
     return session;
   },
 },
 
   session: {
+    strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 يوم بالثواني
   },
   
