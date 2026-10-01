@@ -1,15 +1,42 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
-import { SuccessLoginResponse } from "./interfaces";
+import { SuccessLoginResponse, UserResponse } from "./interfaces";
 
-function isSuccessLoginResponse(payload: unknown): payload is SuccessLoginResponse {
-  if (!payload || typeof payload !== "object") return false;
-  const candidate = payload as Record<string, unknown>;
-  return typeof candidate.token === "string"
-    && candidate.token.length > 0
-    && !!candidate.user
-    && typeof candidate.user === "object";
+function parseLoginSuccess(payload: unknown, fallbackEmail: string): SuccessLoginResponse | null {
+  if (!payload || typeof payload !== "object") return null;
+
+  const root = payload as Record<string, unknown>;
+  const candidates: Record<string, unknown>[] = [root];
+  if (root.data && typeof root.data === "object") {
+    const data = root.data as Record<string, unknown>;
+    candidates.push(data);
+    if (data.data && typeof data.data === "object") candidates.push(data.data as Record<string, unknown>);
+  }
+
+  for (const candidate of candidates) {
+    if (typeof candidate.token !== "string" || !candidate.token) continue;
+
+    const rawUser = candidate.user && typeof candidate.user === "object"
+      ? candidate.user as Partial<UserResponse>
+      : {};
+    const email = typeof rawUser.email === "string" && rawUser.email.trim()
+      ? rawUser.email.trim()
+      : fallbackEmail;
+    const user: UserResponse = {
+      name: typeof rawUser.name === "string" && rawUser.name ? rawUser.name : email.split("@")[0],
+      email,
+      role: typeof rawUser.role === "string" && rawUser.role ? rawUser.role : "user",
+    };
+
+    return {
+      message: typeof candidate.message === "string" ? candidate.message : "success",
+      token: candidate.token,
+      user,
+    };
+  }
+
+  return null;
 }
 
 
@@ -55,7 +82,8 @@ export const authOption: NextAuthConfig = {
           return null;
         }
 
-        if (!isSuccessLoginResponse(payload)) {
+        const loginData = parseLoginSuccess(payload, email);
+        if (!loginData) {
           const errorMessage = payload && typeof payload === "object" && "message" in payload
             ? payload.message
             : "unexpected response format";
@@ -63,13 +91,12 @@ export const authOption: NextAuthConfig = {
           return null;
         }
 
-        const userEmail = typeof payload.user.email === "string" ? payload.user.email.trim() || email : email;
         return {
-          id: userEmail,
-          name: payload.user.name || userEmail.split("@")[0],
-          email: userEmail,
-          user: { ...payload.user, email: userEmail },
-          token: payload.token,
+          id: loginData.user.email,
+          name: loginData.user.name,
+          email: loginData.user.email,
+          user: loginData.user,
+          token: loginData.token,
         };
       }
 
