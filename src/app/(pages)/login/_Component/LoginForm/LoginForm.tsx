@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,7 +21,6 @@ const formSchema = z.object({
 type FormFields = z.infer<typeof formSchema>;
 
 export function LoginForm() {
-  const { update: updateSession } = useSession();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -32,20 +30,12 @@ export function LoginForm() {
   async function onSubmit(values: FormFields) {
     setIsLoading(true); setErrorMessage(null);
     try {
-      const result = await signIn("credentials", { ...values, redirect: false });
-      if (result?.ok) {
-        const session = await updateSession();
-        if (!session?.user?.email) {
-          const message = "Your sign-in was accepted, but the session could not be saved. Please try again.";
-          setErrorMessage(message);
-          toast.error(message);
-          return;
-        }
-
+      const requestedUrl = searchParams.get("callBackUrl") ?? "/products";
+      const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/products";
+      const result = await signIn("credentials", { ...values, redirect: false, redirectTo: callbackUrl });
+      if (result?.ok && !result.error) {
         toast.success("Welcome back! ✨");
-        const requestedUrl = searchParams.get("callBackUrl") ?? "/products";
-        const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/products";
-        window.location.assign(callbackUrl);
+        window.location.assign(result.url ?? callbackUrl);
       }
       else { 
         const message = result?.error || "Incorrect email or password."; 
