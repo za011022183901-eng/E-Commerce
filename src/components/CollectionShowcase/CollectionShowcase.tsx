@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BadgeCheck, Layers3, Sparkles } from "lucide-react";
+import { ArrowUpRight, BadgeCheck, Layers3 } from "lucide-react";
+import AnimatedPageHeading from "@/components/AnimatedPageHeading/AnimatedPageHeading";
 
 type CollectionItem = { _id: string; name: string; slug?: string; image: string };
 
@@ -16,11 +17,12 @@ export default function CollectionShowcase({ items, kind }: { items: CollectionI
     <motion.div animate={{ x: [0, 60, 0], y: [0, 30, 0] }} transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }} className="pointer-events-none absolute -left-28 top-32 h-80 w-80 rounded-full bg-emerald-200/45 blur-3xl" />
     <motion.div animate={{ x: [0, -50, 0], y: [0, -35, 0] }} transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }} className="pointer-events-none absolute -right-24 top-64 h-96 w-96 rounded-full bg-cyan-200/40 blur-3xl" />
     <section className="relative mx-auto max-w-7xl">
-      <motion.header initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, .36, 1] }} className="mb-11 max-w-2xl">
-        <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-4 py-2 text-sm font-bold text-emerald-800 shadow-sm backdrop-blur"><Sparkles size={16} /> {isBrand ? "The ShopMart edit" : "Browse your way"}</span>
-        <h1 className="mt-6 text-5xl font-black leading-[.95] tracking-[-.055em] text-slate-950 sm:text-6xl">{title}</h1>
-        <p className="mt-5 text-lg leading-8 text-slate-600">{subtitle}</p>
-      </motion.header>
+      <AnimatedPageHeading
+        eyebrow={isBrand ? "The ShopMart edit" : "Browse your way"}
+        title={title}
+        accent={isBrand ? "knowing." : "mood."}
+        subtitle={subtitle}
+      />
       <motion.div variants={{ hidden: {}, show: { transition: { staggerChildren: .055 } } }} initial="hidden" animate="show" className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {items.map((item) => <motion.article key={item._id} variants={{ hidden: { opacity: 0, y: 22, scale: .97 }, show: { opacity: 1, y: 0, scale: 1 } }} transition={{ duration: .42, ease: [0.22, 1, .36, 1] }} whileHover={{ y: -8 }} className="group relative overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-3 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur">
           <Link href={`/${kind}/${item._id}`} className="block">

@@ -13,7 +13,8 @@ import {
 } from "@/components/ui/card";
 import AddToCart from "@/components/AddToCard/AdToCard";
 import AddAndRemoveWishlist from "@/components/AddAndRemoveWishlist/page";
-import { StarIcon } from 'lucide-react';
+import AnimatedPageHeading from "@/components/AnimatedPageHeading/AnimatedPageHeading";
+import { ArrowUpRight, StarIcon } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
 export const dynamic = "force-dynamic";
@@ -86,41 +87,26 @@ export default function Products() {
   };
 
   return (
-    <div className="container mx-auto mt-24 px-4">
-      {/* ===== قسم العنوان مع تأثير Marquee ===== */}
-      <div className="mb-12 text-center md:text-left overflow-hidden py-2">
-        <motion.div
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative whitespace-nowrap"
-        >
-          {/* النص الأول يتحرك لليمين */}
-          <motion.h2
-            animate={{ x: [0, 50, 0] }}
-            transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-            className="text-6xl font-extrabold text-gray-900 tracking-tighter"
-          >
-            Our <span className="text-green-500">Products</span>
-          </motion.h2>
-        </motion.div>
-
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="relative whitespace-nowrap mt-3"
-        >
-          {/* النص الثاني يتحرك لليسار */}
-          <motion.p
-            animate={{ x: [0, -50, 0] }}
-            transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
-            className="text-gray-500 text-lg font-medium"
-          >
-            Explore our latest trends and best sellers
-          </motion.p>
-        </motion.div>
-      </div>
+    <main className="relative min-h-screen overflow-hidden px-5 pb-20 pt-28 sm:px-8 lg:px-8 xl:px-12">
+      <motion.div
+        aria-hidden="true"
+        animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
+        transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -left-28 top-32 h-80 w-80 rounded-full bg-emerald-200/45 blur-3xl"
+      />
+      <motion.div
+        aria-hidden="true"
+        animate={{ x: [0, -50, 0], y: [0, -35, 0] }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        className="pointer-events-none absolute -right-24 top-64 h-96 w-96 rounded-full bg-cyan-200/40 blur-3xl"
+      />
+      <section className="mx-auto max-w-[1400px]">
+      <AnimatedPageHeading
+        eyebrow="The ShopMart edit"
+        title="Our Products"
+        accent="Products"
+        subtitle="Explore our latest trends and best sellers"
+      />
 
       {/* ===== شبكة المنتجات مع أنيميشن الظهور ===== */}
       <AnimatePresence>
@@ -130,7 +116,7 @@ export default function Products() {
           </div>
         ) : (
           <motion.div
-            className="flex flex-wrap items-stretch -m-3"
+            className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -138,23 +124,28 @@ export default function Products() {
             {products?.map((product) => (
               <motion.div
                 key={product._id}
-                className="product-card p-3 flex w-full sm:w-full md:w-1/2 lg:w-1/3 xl:w-1/4 group"
+                className="product-card group min-w-0"
                 variants={itemVariants}
-                whileHover={{ scale: 1.02 }} // تأثير عند التمرير بالماوس
+                whileHover={{ y: -8 }}
               >
-                <Card className="flex flex-col justify-between w-full rounded-2xl bg-white border border-gray-100 transition-all duration-500 ease-out relative overflow-hidden shadow-sm hover:shadow-green-500/5 hover:shadow-2xl hover:border-green-500">
+                <Card className="relative flex w-full flex-col justify-between gap-0 overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-3 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur transition-all duration-500 ease-out hover:border-green-300 hover:shadow-2xl hover:shadow-green-500/10">
                   {/* ===== صورة المنتج مع تأثير الهوفر ===== */}
                   <div className="relative overflow-hidden bg-gray-50/50 rounded-t-2xl p-4 flex items-center justify-center h-64">
                     <Link href={"/products/" + product.id} className="w-full h-full block relative">
                       <img
                         src={product.imageCover}
                         alt={product.title}
-                        className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-105"
+                        className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-110"
                       />
                     </Link>
 
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />
+                    <span className="pointer-events-none absolute right-3 top-3 z-10 grid h-10 w-10 place-items-center rounded-2xl bg-white/95 text-emerald-700 opacity-0 shadow-lg transition duration-300 group-hover:opacity-100">
+                      <ArrowUpRight size={19} />
+                    </span>
+
                     {/* شارة القسم */}
-                    <span className="absolute top-3 left-3 text-[11px] font-semibold tracking-wider uppercase bg-white/90 backdrop-blur-sm text-gray-700 px-2.5 py-1 rounded-full shadow-sm border border-gray-100">
+                    <span className="absolute left-3 top-3 z-10 rounded-full border border-gray-100 bg-white/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-700 shadow-sm backdrop-blur-sm">
                       {product.category?.name}
                     </span>
                   </div>
@@ -209,6 +200,7 @@ export default function Products() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </section>
+    </main>
   );
 }
