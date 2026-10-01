@@ -1,25 +1,18 @@
-"use server"
-
 import { getUserToken } from "@/Helpers/getUserToken/tokenuser";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const token = await getUserToken(request);
+  if (!token) return NextResponse.json({ message: "Authentication required" }, { status: 401 });
 
-  const token =await getUserToken()
-  
-    const response = await fetch(`${process.env.URL_API}/cart`, {
-      method: "GET",
-      headers: {
-        token:
-          token+'',
-      },
+  try {
+    const response = await fetch(`${process.env.URL_API || "https://ecommerce.routemisr.com/api/v1"}/cart`, {
+      headers: { token },
+      cache: "no-store",
     });
-
-
     const data = await response.json();
-
-    return NextResponse.json(data);
-  
-    
-  
+    return NextResponse.json(data, { status: response.status });
+  } catch {
+    return NextResponse.json({ message: "Unable to load cart" }, { status: 502 });
+  }
 }

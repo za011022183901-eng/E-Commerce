@@ -34,7 +34,17 @@ export default function GetCartContext({ children }: { children: ReactNode }) {
 
   async function getCart() {
     try {
-      const response = await fetch("/api/get-cart");
+      const response = await fetch("/api/get-cart", { credentials: "same-origin", cache: "no-store" });
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        if (response.status === 401 && session.status === "authenticated") {
+          console.error("Cart API rejected a browser session reported as authenticated:", error?.message);
+        } else if (response.status !== 401) {
+          console.error("Cart request failed:", response.status, error?.message || response.statusText);
+        }
+        SetCartData(null);
+        return;
+      }
       const data: CartResponce = await response.json();
 
       if (data?.data?.cartOwner) {
@@ -43,32 +53,49 @@ export default function GetCartContext({ children }: { children: ReactNode }) {
 
       SetCartData(data);
     } catch (err) {
-      console.error("Error fetching cart:", err);
+      console.error("Cart request could not reach the server:", err);
       SetCartData(null);
-    } finally {
-      SetLoading(false);
     }
   }
 
   async function getWishlist() {
     try {
-      const response = await fetch("/api/get-seshlist");
+      const response = await fetch("/api/get-seshlist", { credentials: "same-origin", cache: "no-store" });
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        if (response.status === 401 && session.status === "authenticated") {
+          console.error("Wishlist API rejected a browser session reported as authenticated:", error?.message);
+        } else if (response.status !== 401) {
+          console.error("Wishlist request failed:", response.status, error?.message || response.statusText);
+        }
+        SetWishlist(null);
+        return;
+      }
       const data: WishlistResponse = await response.json();
 
       SetWishlist(data);
     } catch (err) {
-      console.error("Error fetching wishlist:", err);
+      console.error("Wishlist request could not reach the server:", err);
       SetWishlist(null);
-    } finally {
-      SetLoading(false);
     }
   }
 
   useEffect(() => {
-     {
-      getCart();
-      getWishlist();
+    let active = true;
+    async function loadUserLists() {
+      SetLoading(true);
+      if (session.status !== "authenticated") {
+        SetCartData(null);
+        SetWishlist(null);
+        if (typeof window !== "undefined") localStorage.removeItem("userId");
+        SetLoading(false);
+        return;
+      }
+      await Promise.all([getCart(), getWishlist()]);
+      if (active) SetLoading(false);
     }
+    if (session.status !== "loading") void loadUserLists();
+    return () => { active = false; };
   }, [session.status]);
 
   return (

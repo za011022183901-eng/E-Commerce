@@ -101,19 +101,22 @@ export default function RegisterForm() {
 
   return (
     // تعديل الـ الحاوية الرئيسية: أضفنا pt-28 للموبايل و md:pt-36 للشاشات الأكبر عشان تبعد تماماً عن الـ Navbar
-    <div className="relative min-h-screen flex flex-col justify-start md:items-center px-4 sm:px-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/40 via-gray-50 to-slate-100 overflow-hidden pt-28 pb-16 md:pt-36">
+    <div className="relative min-h-screen flex flex-col justify-start md:items-center px-4 sm:px-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/70 via-gray-50 to-slate-100 overflow-hidden pt-28 pb-16 md:pt-36">
       
       {/* هالة ضوئية خلفية باللون الأخضر والأزرق الناعم جداً لإعطاء طابع الـ Premium */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[350px] bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none" />
+      <motion.div animate={{ x: [0, 48, 0], y: [0, 30, 0] }} transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }} className="pointer-events-none absolute -left-28 top-40 h-72 w-72 rounded-full bg-emerald-300/35 blur-3xl" />
+      <motion.div animate={{ x: [0, -45, 0], y: [0, -25, 0] }} transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }} className="pointer-events-none absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-cyan-200/45 blur-3xl" />
 
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        whileHover={{ y: -3 }}
         className="w-full max-w-2xl relative z-10 mx-auto"
       >
         {/* الكارد الرئيسي زجاجي ناعم وبمساحات داخلية أوسع (p-10 md:p-14) */}
-        <div className="bg-white/85 backdrop-blur-2xl p-10 md:p-14 shadow-[0_10px_40px_rgb(0,0,0,0.03)] border border-emerald-100/50 rounded-[32px]">
+        <div className="bg-white/85 backdrop-blur-2xl p-10 md:p-14 shadow-[0_20px_70px_rgb(5,46,22,0.10)] border border-emerald-100/70 rounded-[32px]">
           
           {/* الـ Header مع الأيقونة الخضراء */}
           <div className="flex flex-col items-center text-center mb-10">

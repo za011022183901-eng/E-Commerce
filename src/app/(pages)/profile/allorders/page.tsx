@@ -20,15 +20,19 @@ export default function AllOrders() {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    if (!userId) return;
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
 
     async function fetchOrders() {
       try {
         const res = await fetch(
           `https://ecommerce.routemisr.com/api/v1/orders/user/${userId}`
         );
+        if (!res.ok) throw new Error("Unable to load orders");
         const data = await res.json();
-        setOrders(data);
+        setOrders(Array.isArray(data) ? data : data.data ?? []);
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { formatCurrency } from "@/Helpers/format";
 import { cartContext } from "@/components/context/CartContext";
 import Loading from "@/components/Loadingg/page";
@@ -8,18 +8,25 @@ import { Loader2, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import CeckOut from "@/components/CeckOut/CeckOut";
-import { addToCardAction2, deleteCard2, clearCard2 } from "./_action/cartApi.action";
 
 export default function ShoppingCart() {
   const { cartData, loading, getCart, SetCartData } = useContext(cartContext);
   const [loadingId, setLoadingId] = useState<null | string>(null);
   const [updatId, setUpdatId] = useState<null | string>(null);
   const [clearLoading, setClearLoading] = useState<boolean>(false);
+  const [quantityDrafts, setQuantityDrafts] = useState<Record<string, string>>({});
+  const updatingProducts = useRef(new Set<string>());
 
   async function deleteCard(cardId: string) {
     try {
       setLoadingId(cardId);
-      const data = await deleteCard2(cardId);
+      const response = await fetch(`/api/cart/${encodeURIComponent(cardId)}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to remove product");
       if (data.status === "success") {
         SetCartData(data);
         toast("Product removed successfully", { icon: "🗑️" });
@@ -34,34 +41,91 @@ export default function ShoppingCart() {
   }
 
   async function updatCard(productId: string, count: number) {
+    if (!Number.isInteger(count) || count < 1 || updatingProducts.current.size > 0) return;
+    const currentCart = cartData;
+    const currentItem = currentCart?.data.products.find((item) => item.product._id === productId);
+    if (!currentCart || !currentItem) return;
+    if (currentItem.count === count) {
+      setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
+      return;
+    }
+
+    updatingProducts.current.add(productId);
     setUpdatId(productId);
+    const optimisticProducts = currentCart.data.products.map((item) =>
+      item.product._id === productId ? { ...item, count } : item
+    );
+    SetCartData({
+      ...currentCart,
+      numOfCartItems: currentCart.numOfCartItems + count - currentItem.count,
+      data: {
+        ...currentCart.data,
+        products: optimisticProducts,
+        totalCartPrice: optimisticProducts.reduce((total, item) => total + item.price * item.count, 0),
+      },
+    });
     try {
-      const data = await addToCardAction2(productId, count);
+      const response = await fetch(`/api/cart/${encodeURIComponent(productId)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ count }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to update cart");
       if (data.status === "success") {
         SetCartData(data);
-        toast("Product quantity updated", { icon: "✅" });
+        setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
       } else {
+        SetCartData(currentCart);
+        setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
         toast.error(data.message || "Failed to update cart");
       }
     } catch (error: any) {
+      SetCartData(currentCart);
+      setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
       toast.error(error.message || "Something went wrong");
     } finally {
+      updatingProducts.current.delete(productId);
       setUpdatId(null);
     }
   }
 
+  function updateQuantityInput(productId: string, value: string) {
+    if (!/^\d*$/.test(value)) return;
+    setQuantityDrafts((drafts) => ({ ...drafts, [productId]: value }));
+  }
+
+  function saveQuantityInput(productId: string, currentCount: number) {
+    const rawValue = quantityDrafts[productId] ?? String(currentCount);
+    const count = Number(rawValue);
+    if (!rawValue || !Number.isInteger(count) || count < 1) {
+      setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentCount) }));
+      return;
+    }
+    void updatCard(productId, count);
+  }
+
   async function clearCard() {
     setClearLoading(true);
-    SetCartData(null);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-
     try {
-      const data = await clearCard2();
-      toast("All cart items removed successfully", { icon: "🗑️" });
+      const response = await fetch("/api/cart", {
+        method: "DELETE",
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Failed to clear cart");
+      if (data.status === "success") {
+        SetCartData(data);
+        toast("All cart items removed successfully", { icon: "🗑️" });
+      } else {
+        toast.error(data.message || "Failed to clear cart");
+      }
     } catch (error) {
       toast.error("Something went wrong. Try again later.");
     } finally {
       setClearLoading(false);
+      await getCart();
     }
   }
 
@@ -99,18 +163,33 @@ export default function ShoppingCart() {
 
                       <div className="mt-4 flex items-center gap-3">
                         <button
-                          disabled={product.count === 1}
+                          type="button"
+                          disabled={product.count === 1 || updatId !== null}
                           onClick={() => updatCard(product.product._id, product.count - 1)}
                           className="h-8 w-8 cursor-pointer rounded-md border border-gray-200 bg-white flex items-center justify-center text-lg"
                         >
                           −
                         </button>
 
-                        <div className="min-w-[28px] text-center text-sm flex items-center justify-center">
-                          {updatId === product.product._id ? <Loader2 className="animate-spin text-green-500" /> : product.count}
-                        </div>
+                        <input
+                          aria-label={`Quantity for ${product.product.title}`}
+                          type="number"
+                          min={1}
+                          step={1}
+                          inputMode="numeric"
+                          value={quantityDrafts[product.product._id] ?? String(product.count)}
+                          onChange={(event) => updateQuantityInput(product.product._id, event.target.value)}
+                          onBlur={() => saveQuantityInput(product.product._id, product.count)}
+                          onKeyDown={(event) => {
+                            if (event.key === "Enter") event.currentTarget.blur();
+                          }}
+                          disabled={updatId !== null}
+                          className="h-9 w-16 rounded-md border border-gray-200 text-center text-sm font-semibold outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 disabled:opacity-60"
+                        />
 
                         <button
+                          type="button"
+                          disabled={updatId !== null}
                           onClick={() => updatCard(product.product._id, product.count + 1)}
                           className="h-8 w-8 cursor-pointer rounded-md border border-gray-200 bg-white flex items-center justify-center text-lg"
                         >
@@ -123,6 +202,7 @@ export default function ShoppingCart() {
                       <div className="text-lg font-semibold">{formatCurrency(product.price)}</div>
 
                       <button
+                        type="button"
                         onClick={() => deleteCard(product.product._id)}
                         className="text-sm text-red-500 cursor-pointer font-medium px-3 py-1.5 rounded-md transition-all duration-300 hover:bg-red-600 hover:text-white hover:shadow-md"
                       >
@@ -160,6 +240,7 @@ export default function ShoppingCart() {
                 </button>
 
                 <button
+                  type="button"
                   onClick={clearCard}
                   className="mt-4 w-full cursor-pointer py-3 rounded-3xl border border-red-200 text-red-500 font-medium bg-white shadow-md transition-all duration-300 hover:bg-red-600 hover:text-white hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center justify-center gap-3"
                 >

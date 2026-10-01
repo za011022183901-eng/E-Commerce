@@ -17,7 +17,7 @@ export default function CartItem() {
       {(wishlistData?.count ?? 0) > 0 ? (
         <>
           <header className="mb-8 text-left max-w-[1100px] mx-auto">
-            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Shopping Cart</h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">Your Wishlist</h1>
             <p className="text-gray-500 mt-2">
               {wishlistData?.count || 0} item(s) in your wishlist
             </p>

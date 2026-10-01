@@ -1,11 +1,13 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { NextAuthConfig } from "next-auth";
 import { FailedLoginResponse, SuccessLoginResponse } from "./interfaces";
 
 
 
 
-export const authOption : AuthOptions= {
+
+export const authOption: NextAuthConfig = {
   secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
 
   providers: [
@@ -58,21 +60,21 @@ export const authOption : AuthOptions= {
 
 
 callbacks: {
-  jwt: ({ token, user }) => {   // كلام ثابت
+  jwt: ({ token, user }) => {
     if (user) {
-      token.user = user.user
-      token.token = user.token
+      // next-auth v5 types are flexible here; we keep the same shape you use in the project
+      token.user = (user as any).user;
+      token.token = (user as any).token;
     }
-    return token
+    return token;
   },
 
-  session: ({ session, token }) => {  // كلام ثابت
-    session.user = token.user
-    return session
-  }
+  session: ({ session, token }) => {
+    // Ensure session.user always exists to avoid runtime crashes
+    (session as any).user = (token as any).user;
+    return session;
+  },
 },
-
-
 
   session: {
     maxAge: 30 * 24 * 60 * 60, // 30 يوم بالثواني
@@ -88,3 +90,5 @@ pages:{
 
 
 };
+
+export const { handlers, auth, signIn, signOut } = NextAuth(authOption);

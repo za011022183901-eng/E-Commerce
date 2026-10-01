@@ -26,34 +26,8 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
 
-  const [userName, setUserName] = useState<string | null>(null)
-
-  // حفظ اسم المستخدم في localStorage عند تسجيل الدخول
-  useEffect(() => {
-    if (session?.data?.user?.name) {
-      const name = session.data.user.name.split(" ")[0]
-      setUserName(name)
-      if (typeof window !== "undefined") {
-        localStorage.setItem("userName", name)
-      }
-    } else if (session.status === "unauthenticated") {
-      // مسح الاسم عند تسجيل الخروج
-      setUserName(null)
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("userName")
-      }
-    }
-  }, [session?.data?.user?.name, session.status])
-
-  // جلب الاسم من localStorage عند التحميل
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedName = localStorage.getItem("userName")
-      if (savedName && !userName) {
-        setUserName(savedName)
-      }
-    }
-  }, [])
+  const isAuthenticated = session.status === "authenticated"
+  const userName = session.data?.user?.name?.split(" ")[0]
 
   // التحكم في إخفاء Navbar عند التمرير
   useEffect(() => {
@@ -94,7 +68,7 @@ export default function Navbar() {
 
           {/* ===== Mobile Menu + Icons ===== */}
           <div className="flex items-center gap-5 md:hidden z-[9999]">
-            {userName || session?.data?.user ? (
+            {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
                 <DropdownMenu>
@@ -147,6 +121,8 @@ export default function Navbar() {
                   </Link>
                 </div>
               </>
+            ) : session.status === "loading" ? (
+              <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
             ) : (
               <>
                 <Link
@@ -223,7 +199,7 @@ export default function Navbar() {
 
         {/* ===== Right Icons (Desktop) ===== */}
         <div className="hidden md:flex items-center gap-6 justify-end">
-          {userName || session?.data?.user ? (
+          {isAuthenticated ? (
             <>
               {/* User Dropdown */}
               <DropdownMenu>
@@ -278,6 +254,8 @@ export default function Navbar() {
                 </Link>
               </div>
             </>
+          ) : session.status === "loading" ? (
+            <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
           ) : (
             <>
               <Link

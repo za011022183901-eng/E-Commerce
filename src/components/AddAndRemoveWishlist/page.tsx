@@ -5,8 +5,6 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 import { cartContext } from "@/components/context/CartContext";
-import { addWhslist } from "@/app/(pages)/Wishlist/_actionn/addWeshlist.action";
-import { removeWhslist } from "@/app/(pages)/Wishlist/_actionn/removeWeshlist";
 import { useSession } from "next-auth/react";
 
 export default function Whilshit({ productId }: { productId: string }) {
@@ -33,7 +31,11 @@ export default function Whilshit({ productId }: { productId: string }) {
   }, [isInWishlist, status]);
 
   async function toggleWishlist() {
-    if (status !== "authenticated") {
+    // Wait until NextAuth has checked the browser's session cookie before
+    // deciding that the visitor needs to sign in.
+    if (status === "loading") return;
+
+    if (status === "unauthenticated") {
       toast.error("Please login to manage your wishlist");
       router.push("/login"); // 🔹 Redirect للصفحة login
       return;
@@ -42,7 +44,18 @@ export default function Whilshit({ productId }: { productId: string }) {
     setLoading(true);
     try {
       if (!liked) {
-        const data = await addWhslist(productId);
+        const response = await fetch("/api/wishlist", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productId }),
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          toast.error("Your login session expired. Please sign in again.");
+          router.push("/login");
+          return;
+        }
 
         if (data.status === "success") {
           setLiked(true);
@@ -52,7 +65,17 @@ export default function Whilshit({ productId }: { productId: string }) {
         }
 
       } else {
-        const data = await removeWhslist(productId);
+        const response = await fetch(`/api/wishlist/${encodeURIComponent(productId)}`, {
+          method: "DELETE",
+          credentials: "same-origin",
+          cache: "no-store",
+        });
+        const data = await response.json();
+        if (response.status === 401) {
+          toast.error("Your login session expired. Please sign in again.");
+          router.push("/login");
+          return;
+        }
 
         if (data.status === "success") {
           setLiked(false);
@@ -72,10 +95,10 @@ export default function Whilshit({ productId }: { productId: string }) {
   return (
     <button
       onClick={toggleWishlist}
-      disabled={loading}
+      disabled={loading || status === "loading"}
       className="flex items-center justify-center"
     >
-      {loading ? (
+      {loading || status === "loading" ? (
         <Loader2 className="animate-spin text-pink-600" />
       ) : (
         <Heart

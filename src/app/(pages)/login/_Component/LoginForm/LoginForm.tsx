@@ -1,199 +1,77 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Eye, EyeOff, KeyRound, Loader2, LockKeyhole, Mail, MoveRight } from "lucide-react";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
-
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import { Loader2, Search } from "lucide-react";
 
-// ===== Validation schema =====
 const formSchema = z.object({
-  email: z
-    .string()
-    .email({ message: "Please enter a valid email address." })
-    .regex(/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/, {
-      message: "Email must follow the standard format.",
-    }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters." })
-    .regex(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).+$/, {
-      message:
-        "Password must contain uppercase, lowercase, number and special character.",
-    }),
+  email: z.string().email({ message: "Enter a valid email address." }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters." }),
 });
-
 type FormFields = z.infer<typeof formSchema>;
 
-// ===== Login Form Component =====
 export function LoginForm() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { update: updateSession } = useSession();
+  const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const form = useForm<FormFields>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { email: "", password: "" },
-  });
-
-///////////////////////////////////////////////////////
-
-
-
-const searchParams = useSearchParams();
-
-const callBackURL = searchParams.get("callBackUrl");
-
-
-
-
-
-///////////////////////////////////////////////////////////////////////
+  const form = useForm<FormFields>({ resolver: zodResolver(formSchema), defaultValues: { email: "", password: "" } });
 
   async function onSubmit(values: FormFields) {
-    setIsLoading(true);
-    setErrorMessage(null);
-
-    const res = await signIn("credentials", { ...values, redirect: false });
-
-    if (res?.ok) {
-      toast.success("Congratulations! Sir 🎉");
-      window.location.href = callBackURL ??  "/products"; // 🌐 Reload كامل للصفحة
-    } else {
-      setErrorMessage(res?.error || "Incorrect data");
-      toast.error(res?.error || "Incorrect data");
+    setIsLoading(true); setErrorMessage(null);
+    try {
+      const result = await signIn("credentials", { ...values, redirect: false });
+      if (result?.ok) {
+        await updateSession();
+        toast.success("Welcome back! ✨");
+        const requestedUrl = searchParams.get("callBackUrl") ?? "/products";
+        const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/products";
+        router.replace(callbackUrl);
+        router.refresh();
+      }
+      else { 
+        const message = result?.error || "Incorrect email or password."; 
+        setErrorMessage(message); 
+        toast.error(message); 
+      }
+    } finally { 
+      setIsLoading(false); 
     }
-
-    setIsLoading(false);
   }
 
-
-///////////////////////////////////////////////////////////////////////////
-
-
-  return (
-    <motion.div
-      initial={{ x: 100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 1, ease: "easeOut" }}
-    >
-
-
-
-      <Card className="md:w-[120%]">
-
-
-
-
-
-        {/* ===== عرض الخطأ ===== */}
-        {errorMessage && (
-          <div className="bg-red-100 text-red-800 text-center">
-            {errorMessage}
-          </div>
+  const fieldClass = "h-13 rounded-2xl border-slate-200 bg-slate-50 pl-11 pr-11 text-slate-900 text-base shadow-sm transition focus-visible:border-emerald-500 focus-visible:bg-white focus-visible:ring-4 focus-visible:ring-emerald-500/10";
+  
+  return <>
+    <div className="mb-8"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-emerald-950 text-emerald-300 shadow-lg shadow-emerald-950/15"><KeyRound size={22} /></span><h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950">Sign in</h2><p className="mt-2 text-sm leading-6 text-slate-500">Your saved favourites and orders are waiting.</p></div>
+    <AnimatePresence>{errorMessage && <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="mb-5 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{errorMessage}</motion.div>}</AnimatePresence>
+    <Form {...form}><form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+      <FormField control={form.control} name="email" render={({ field }) => <FormItem><FormLabel className="text-sm font-bold text-slate-700">Email address</FormLabel><FormControl><div className="relative mt-2"><Mail className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} /><Input type="email" autoComplete="email" placeholder="name@example.com" className={fieldClass} {...field} /></div></FormControl><FormMessage /></FormItem>} />
+      <FormField control={form.control} name="password" render={({ field }) => <FormItem><div className="flex items-center justify-between"><FormLabel className="text-sm font-bold text-slate-700">Password</FormLabel><Link href="/forgot-password" className="text-xs font-bold text-emerald-700 hover:text-emerald-600">Forgot it?</Link></div><FormControl><div className="relative mt-2"><LockKeyhole className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} /><Input type={showPassword ? "text" : "password"} autoComplete="current-password" placeholder="Enter your password" className={fieldClass} {...field} /><button type="button" aria-label={showPassword ? "Hide password" : "Show password"} onClick={() => setShowPassword((value) => !value)} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-emerald-700">{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button></div></FormControl><FormMessage /></FormItem>} />
+      
+      <Button disabled={isLoading} type="submit" className="group mt-3 flex h-13 w-full items-center justify-center rounded-2xl bg-emerald-600 text-base font-bold text-white shadow-lg shadow-emerald-600/25 transition hover:-translate-y-0.5 hover:bg-emerald-700">
+        {isLoading ? (
+          <Loader2 className="animate-spin" />
+        ) : (
+          <span className="flex items-center gap-2">
+            Continue <MoveRight className="transition-transform group-hover:translate-x-1" size={19} />
+          </span>
         )}
-{<Form {...form}>
-  <form
-    onSubmit={form.handleSubmit(onSubmit)}
-    className="flex flex-col justify-center space-y-16 w-full max-w-2xl mx-auto p-6 sm:p-8 md:p-10"
-  >
-    {/* ===== Email Field ===== */}
-    <FormField
-      control={form.control}
-      name="email"
-      render={({ field }) => (
-        <FormItem className="my-4 sm:my-6">
-          <FormLabel className="text-2xl sm:text-3xl">Email</FormLabel>
-          <FormControl>
-            <Input
-              className="text-xl sm:text-2xl md:text-2xl p-4 sm:p-5 md:p-6 rounded-xl border-2 border-gray-300 focus:border-green-600 focus:ring-4 focus:ring-green-100 outline-none shadow-md transition-all duration-300"
-              placeholder="example@email.com"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage className="text-lg" />
-        </FormItem>
-      )}
-    />
+      </Button>
 
-    {/* ===== Password Field ===== */}
-    <FormField
-      control={form.control}
-      name="password"
-      render={({ field }) => (
-        <FormItem className="my-4 sm:my-6">
-          <FormLabel className="text-2xl sm:text-3xl">Password</FormLabel>
-          <FormControl>
-            <Input
-              type="password"
-              className="text-xl sm:text-2xl md:text-2xl p-4 sm:p-5 md:p-6 rounded-xl border-2 border-gray-300 focus:border-green-600 focus:ring-4 focus:ring-green-100 outline-none shadow-md transition-all duration-300"
-              placeholder="Enter your password"
-              {...field}
-            />
-          </FormControl>
-          <FormMessage className="text-lg" />
-        </FormItem>
-      )}
-    />
-
-    <Button
-      disabled={isLoading}
-      type="submit"
-      className="bg-green-600 hover:bg-green-700 w-full text-white cursor-pointer text-2xl sm:text-3xl py-4 sm:py-5 px-8 sm:px-12 rounded-2xl flex mx-auto shadow-lg transition-transform hover:scale-105 mt-10 p-3"
-    >
-      {isLoading ? <Loader2 className="animate-spin" /> : <h2>Signin</h2>}
-    </Button>
-
-   {/* ===== Links Section ===== */}
-<div className="text-center text-black text-2xl sm:text-base mt-4">
-  <p className="mb-1 text-black">
-    Don't have an account?{" "}
-    <span
-      className="text-blue-600 font-medium  cursor-pointer hover:underline"
-      onClick={() => router.push("/register")}
-    >
-      Register here
-    </span>
-  </p>
-  <p className="mb-0 text-black">
-    Forgot your password?{" "}
-    <span
-      className="text-blue-600 font-medium cursor-pointer hover:underline"
-      onClick={() => router.push("/forgot-password")}
-    >
-      Reset it here
-    </span>
-  </p>
-</div>
-
-
-
-
-
-   
-
-    
-  </form>
-</Form>
-}
-
-      </Card>
-    </motion.div>
-  );
+    </form></Form>
+    <p className="mt-7 text-center text-sm text-slate-500">New here? <Link href="/register" className="font-bold text-emerald-700 hover:text-emerald-600">Create your account</Link></p>
+  </>;
 }

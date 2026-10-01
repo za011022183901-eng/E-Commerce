@@ -1,19 +1,35 @@
 import { products } from '@/interfaces';
-import { Params } from 'next/dist/server/request/params';
 import { Star, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 import React from 'react';
 import AddToCart from '@/components/AddToCard/AdToCard';
 import Whilshit from '@/components/AddAndRemoveWishlist/page';
 import ProductGallery from '@/components/ProductGallery/ProductGallery';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 // استيراد المعرض الجديد (عدل المسار حسب مكان حفظك للملف)
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductsDetails({ params }: { params: Params }) {
-  let { productid } = params;
+type ProductPageProps = { params: Promise<{ productid: string }> };
 
-  const response = await fetch('https://ecommerce.routemisr.com/api/v1/products/' + productid);
-  const { data: product }: { data: products } = await response.json();
+async function getProduct(productid: string): Promise<products | null> {
+  const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products/${encodeURIComponent(productid)}`, { cache: "no-store" });
+  if (!response.ok) return null;
+  const payload = await response.json();
+  return payload?.data ?? null;
+}
+
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const { productid } = await params;
+  const product = await getProduct(productid);
+  return { title: product ? product.title : "Product not found", description: product?.description ?? "Explore products on ShopMart." };
+}
+
+export default async function ProductsDetails({ params }: ProductPageProps) {
+  const { productid } = await params;
+
+  const product = await getProduct(productid);
+  if (!product) notFound();
 
   // دالة رندرة النجوم الديناميكية
   const renderStars = (rating: number) => {
@@ -42,7 +58,7 @@ export default async function ProductsDetails({ params }: { params: Params }) {
       <div className="w-full max-w-7xl flex flex-col md:flex-row gap-12 lg:gap-16 items-start">
         
         {/* ===== الجزء الأيسر: تم نقل المعرض بالكامل للمكون الجديد ذو الـ State ===== */}
-        <ProductGallery images={product.images} title={product.title} />
+        <ProductGallery images={product.images ?? [product.imageCover]} title={product.title} />
 
         {/* ===== الجزء الأيمن: تفاصيل المنتج الواسعة والمنسقة ===== */}
         <div className="w-full md:w-[45%] flex flex-col justify-between space-y-8 py-4">
