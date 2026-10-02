@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
 import { SuccessLoginResponse, UserResponse } from "./interfaces";
 
+process.env.NEXTAUTH_URL ??= "https://e-commerce-xi-ruby-59.vercel.app";
+
 function parseLoginSuccess(payload: unknown, fallbackEmail: string): SuccessLoginResponse | null {
   if (!payload || typeof payload !== "object") return null;
 
