@@ -33,7 +33,7 @@ export async function proxy(req: NextRequest) {
       return NextResponse.next();
     }
 
-    const redirectUrl = new URL("/", req.nextUrl.origin);
+    const redirectUrl = new URL("/profile", req.nextUrl.origin);
     return NextResponse.redirect(redirectUrl);
   }
 

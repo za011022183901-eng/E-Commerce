@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 // إضافة الأيقونات الجديدة هنا
-import { ShoppingCart, UserIcon, Menu, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award } from "lucide-react"
+import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu } from "lucide-react"
 import { useContext, useState, useEffect } from "react"
 import { cartContext } from "@/components/context/CartContext"
 import { signOut, useSession } from "next-auth/react"
@@ -18,8 +18,6 @@ import { signOut, useSession } from "next-auth/react"
 export default function Navbar() {
   const session = useSession()
   const pathname = usePathname()
-  const [open, setOpen] = useState(false)
-  const handleClose = () => setOpen(false)
   const { loading, cartData, wishlistData } = useContext(cartContext)
 
   const [showNavbar, setShowNavbar] = useState(true)
@@ -56,18 +54,18 @@ export default function Navbar() {
         showNavbar ? "translate-y-0" : "-translate-y-full"
       } py-4 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200`}
     >
-      <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6">
+      <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 px-3 sm:px-6">
         {/* ===== Logo + Mobile Icons ===== */}
         <div className="flex items-center justify-between w-full md:w-auto">
           <Link href={"/"}>
             <div className="flex items-center gap-2 cursor-pointer">
               <ShoppingCart className="text-green-500 w-7 h-7" />
-              <h1 className="text-2xl font-extrabold text-gray-800 tracking-wide">ShopMart</h1>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-gray-800 tracking-wide">ShopMart</h1>
             </div>
           </Link>
 
           {/* ===== Mobile Menu + Icons ===== */}
-          <div className="flex items-center gap-5 md:hidden z-[9999]">
+          <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999]">
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
@@ -75,7 +73,7 @@ export default function Navbar() {
                   <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2">
                     <UserIcon className="w-6 h-6 text-gray-700 hover:text-green-500 transition" />
                     {(session?.data?.user?.name || userName) && (
-                      <span className="text-xl font-semibold text-gray-700">
+                      <span className="hidden sm:inline text-base font-semibold text-gray-700">
                         {session?.data?.user?.name?.split(" ")[0] || userName}
                       </span>
                     )}
@@ -85,7 +83,7 @@ export default function Navbar() {
                     <Link href="/profile">
                       <DropdownMenuItem>Profile</DropdownMenuItem>
                     </Link>
-                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -123,47 +121,29 @@ export default function Navbar() {
               </>
             ) : session.status === "loading" ? (
               <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className={pathname === "/login" ? activeButtonClass : guestButtonClass}
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className={pathname === "/register" ? activeButtonClass : guestButtonClass}
-                >
-                  Register
-                </Link>
-              </>
-            )}
+            ) : null}
 
-            {/* Mobile Menu */}
-            <DropdownMenu open={open} onOpenChange={setOpen}>
-              <DropdownMenuTrigger className="outline-0 relative z-[9999]">
-                <Menu className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
+            <DropdownMenu>
+              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-10 w-10 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500">
+                <Menu className="h-6 w-6" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="md:hidden z-[9999] relative">
-                <Link href="/products" onClick={handleClose}>
-                  <DropdownMenuItem className="flex items-center gap-2">
-                    <ShoppingBag className="w-4 h-4 text-gray-500" />
-                    Products
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/categories" onClick={handleClose}>
-                  <DropdownMenuItem className="flex items-center gap-2">
-                    <LayoutGrid className="w-4 h-4 text-gray-500" />
-                    Categories
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/brands" onClick={handleClose}>
-                  <DropdownMenuItem className="flex items-center gap-2">
-                    <Award className="w-4 h-4 text-gray-500" />
-                    Brands
-                  </DropdownMenuItem>
-                </Link>
+              <DropdownMenuContent align="end" className="z-[1001] w-52">
+                {[
+                  { href: "/products", label: "Products" },
+                  { href: "/categories", label: "Categories" },
+                  { href: "/brands", label: "Brands" },
+                ].map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <DropdownMenuItem className={pathname === item.href ? "font-semibold text-green-700" : ""}>{item.label}</DropdownMenuItem>
+                  </Link>
+                ))}
+                {!isAuthenticated && session.status !== "loading" && (
+                  <>
+                    <div className="my-1 border-t border-gray-100" />
+                    <Link href="/login"><DropdownMenuItem className={pathname === "/login" ? "font-semibold text-green-700" : ""}>Login</DropdownMenuItem></Link>
+                    <Link href="/register"><DropdownMenuItem className={pathname === "/register" ? "font-semibold text-green-700" : ""}>Register</DropdownMenuItem></Link>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -216,7 +196,7 @@ export default function Navbar() {
                   <Link href={"/profile"}>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>

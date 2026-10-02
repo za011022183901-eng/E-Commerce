@@ -13,5 +13,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><body className="min-h-screen font-sans antialiased" suppressHydrationWarning><MySassion><GetCartContext><Navbar /><div className="mx-auto min-h-screen max-w-[1600px]"><Toaster position="top-center" toastOptions={{ duration: 3500 }} /><PageExperience>{children}</PageExperience></div><Footer /></GetCartContext></MySassion></body></html>;
+  return <html lang="en" suppressHydrationWarning><body className="min-h-screen font-sans antialiased" suppressHydrationWarning><MySassion><GetCartContext><Navbar /><div className="min-h-screen"><Toaster position="top-center" toastOptions={{ duration: 3500 }} /><PageExperience>{children}</PageExperience></div><Footer /></GetCartContext></MySassion></body></html>;
 }

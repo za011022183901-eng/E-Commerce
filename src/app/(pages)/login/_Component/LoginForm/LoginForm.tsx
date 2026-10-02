@@ -30,8 +30,8 @@ export function LoginForm() {
   async function onSubmit(values: FormFields) {
     setIsLoading(true); setErrorMessage(null);
     try {
-      const requestedUrl = searchParams.get("callBackUrl") ?? "/products";
-      const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/products";
+      const requestedUrl = searchParams.get("callBackUrl") ?? "/profile";
+      const callbackUrl = requestedUrl.startsWith("/") && !requestedUrl.startsWith("//") ? requestedUrl : "/profile";
       const result = await signIn("credentials", { ...values, redirect: false, redirectTo: callbackUrl });
       if (result?.ok && !result.error) {
         toast.success("Welcome back! ✨");

@@ -8,6 +8,7 @@ import { Loader2, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import CeckOut from "@/components/CeckOut/CeckOut";
+import { motion } from "framer-motion";
 
 export default function ShoppingCart() {
   const { cartData, loading, getCart, SetCartData } = useContext(cartContext);
@@ -134,18 +135,24 @@ export default function ShoppingCart() {
       {loading ? (
         <Loading />
       ) : cartData?.numOfCartItems! > 0 ? (
-        <div className="px-6 md:px-12 lg:px-20 py-10 md:py-20 md:pb-41">
+        <div className="px-3 sm:px-6 md:px-12 lg:px-20 pb-8 pt-28 sm:pt-32 md:pb-41">
           <div className="max-w-9xl mx-auto">
-            <header className="mb-8">
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight my-14">Shopping Cart</h1>
-              <p className="text-gray-500 mt-2">{cartData?.numOfCartItems} item(s) in your cart</p>
-            </header>
+            <motion.header initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35 }} className="mb-8">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-slate-900">
+                <motion.span initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: [0, 2, 0] }} transition={{ opacity: { duration: .35 }, x: { duration: 2.4, repeat: Infinity, repeatDelay: .25, ease: "easeInOut" } }} className="inline-block">Shopping</motion.span>{" "}
+                <motion.span initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: [0, -2, 0], backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }} transition={{ opacity: { duration: .35, delay: .12 }, x: { duration: 2.4, delay: .12, repeat: Infinity, repeatDelay: .25, ease: "easeInOut" }, backgroundPosition: { duration: 3.5, repeat: Infinity, ease: "linear" } }} className="inline-block bg-gradient-to-r from-emerald-700 via-teal-400 to-cyan-600 bg-[length:200%_auto] bg-clip-text text-transparent">Cart</motion.span>
+              </h1>
+              <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5, delay: .3, ease: "easeOut" }} className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-100 bg-white/80 px-3.5 py-1.5 text-sm text-gray-600 shadow-sm">
+                <motion.span animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 2.2, repeat: Infinity, repeatDelay: .3 }} className="font-bold text-emerald-700">{cartData?.numOfCartItems}</motion.span>
+                <span>item(s) in your cart</span>
+              </motion.p>
+            </motion.header>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
               <div className="lg:col-span-2 space-y-4">
                 {cartData?.data.products.map((product) => (
-                  <div key={product._id} className={`flex items-center gap-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm relative ${updatId === product.product._id ? "opacity-50 pointer-events-none" : ""}`}>
-                    <div className="w-28 h-28 flex-shrink-0 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center">
+                  <div key={product._id} className={`flex flex-wrap items-center gap-4 sm:gap-6 rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm relative min-w-0 ${updatId === product.product._id ? "opacity-50 pointer-events-none" : ""}`}>
+                    <div className="w-20 h-20 sm:w-28 sm:h-28 flex-shrink-0 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center">
                       {product.product?.imageCover ? (
                         <img src={product.product.imageCover} alt={product.product.title || "Product"} className="object-cover w-full h-full" />
                       ) : (
@@ -155,13 +162,13 @@ export default function ShoppingCart() {
                       )}
                     </div>
 
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold">{product.product.title}</h3>
-                      <p className="text-sm text-gray-500 mt-1">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base sm:text-lg font-semibold break-words [overflow-wrap:anywhere]">{product.product.title}</h3>
+                      <p className="text-sm text-gray-500 mt-1 break-words [overflow-wrap:anywhere]">
                         {product.product.brand?.name || "No Brand"} · {product.product.category?.name || "No Category"}
                       </p>
 
-                      <div className="mt-4 flex items-center gap-3">
+                      <div className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3">
                         <button
                           type="button"
                           disabled={product.count === 1 || updatId !== null}
@@ -198,8 +205,8 @@ export default function ShoppingCart() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end gap-3">
-                      <div className="text-lg font-semibold">{formatCurrency(product.price)}</div>
+                    <div className="flex w-full sm:w-auto flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 min-w-0">
+                      <div className="text-base sm:text-lg font-semibold break-words [overflow-wrap:anywhere]">{formatCurrency(product.price)}</div>
 
                       <button
                         type="button"

@@ -1,6 +1,7 @@
 "use server"
 
 import { getUserToken } from "@/Helpers/getUserToken/tokenuser";
+import { headers } from "next/headers";
 
 
 
@@ -139,7 +140,16 @@ export async function createCheckoutSessionVisa2(
   shippingAddress: { details: string; city: string; phone: string }
 ) {
   const token = await getUserToken();
-  const appUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+  const configuredSiteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXTAUTH_URL ||
+    process.env.AUTH_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined);
+  const requestHeaders = await headers();
+  const requestHost = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host");
+  const requestProtocol = requestHeaders.get("x-forwarded-proto") || (process.env.NODE_ENV === "development" ? "http" : "https");
+  const requestUrl = requestHost ? `${requestProtocol}://${requestHost}` : "http://127.0.0.1:3000";
+  const appUrl = (configuredSiteUrl || requestUrl).replace(/\/$/, "");
 
   const response = await fetch(
     `https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${encodeURIComponent(appUrl)}`,

@@ -78,7 +78,7 @@ const validateField = (name: string, value: string) => {
       const updatedUser = await updateProfileServerAction(formData); // Server Action
       if (updateSession) updateSession({ user: updatedUser });
       
-      signOut()
+      signOut({ callbackUrl: "/login" })
 
       toast.success("Profile updated successfully!");
     } catch (err: any) {

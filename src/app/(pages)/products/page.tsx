@@ -87,7 +87,8 @@ export default function Products() {
   };
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-5 pb-20 pt-28 sm:px-8 lg:px-8 xl:px-12">
+    <main className="relative isolate min-h-screen overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-cyan-50 px-5 pb-20 pt-28 sm:px-8 lg:px-8 xl:px-12">
+      <motion.div aria-hidden="true" animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }} transition={{ duration: 18, repeat: Infinity, ease: "linear" }} className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(125deg,rgba(16,185,129,.07),transparent_35%,rgba(6,182,212,.08),transparent_75%)] bg-[length:200%_200%]" />
       <motion.div
         aria-hidden="true"
         animate={{ x: [0, 60, 0], y: [0, 30, 0] }}
