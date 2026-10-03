@@ -189,8 +189,8 @@ export default function CategoryDetails() {
                   <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
                     <div>
                       <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Price</span>
-                      <p className="font-black text-gray-950 text-xl tracking-tight">
-                        {product.price} <span className="text-xs text-green-500 font-extrabold">EGP</span>
+                      <p className="font-black text-gray-950 text-xl tracking-tight dark:text-white">
+                        {product.price} <span className="text-xs text-green-500 font-extrabold dark:text-white">EGP</span>
                       </p>
                     </div>
                     <div className="flex items-center gap-0.5">

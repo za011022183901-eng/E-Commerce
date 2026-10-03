@@ -126,7 +126,7 @@ export default function AllOrders() {
                 ))}
 
                 <div className="flex-1 space-y-6 text-gray-800">
-                  <div className="text-3xl font-bold text-green-600">
+                  <div className="text-3xl font-bold text-green-600 dark:text-white">
                     EGP {order.totalOrderPrice || 0}
                   </div>
 

@@ -113,8 +113,8 @@ export default async function ProductsDetails({ params }: ProductPageProps) {
           <div className="space-y-6 pt-2">
             <div className="flex flex-col">
               <span className="text-[11px] text-gray-400 font-bold uppercase tracking-wider mb-0.5">Price Total</span>
-              <p className="font-black text-gray-950 text-4xl tracking-tight">
-                {product.price} <span className="text-lg text-green-500 font-black ml-0.5">EGP</span>
+              <p className="font-black text-gray-950 text-4xl tracking-tight dark:text-white">
+                {product.price} <span className="text-lg text-green-500 font-black ml-0.5 dark:text-white">EGP</span>
               </p>
             </div>
 

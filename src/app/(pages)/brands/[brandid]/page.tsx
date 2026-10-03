@@ -73,7 +73,7 @@ export default async function BrandDetails({ params }: { params: Params }) {
           </CardHeader>
 
           <CardContent>
-            <p className="text-sm font-medium text-green-700">
+            <p className="text-sm font-medium text-green-700 dark:text-white">
               Price: {product.price} EGP
             </p>
           </CardContent>

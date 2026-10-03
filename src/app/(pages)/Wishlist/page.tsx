@@ -49,7 +49,7 @@ export default function CartItem() {
                 </div>
 
                 <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-4 min-w-0">
-                  <span className="font-semibold text-gray-800 text-base sm:text-lg break-words [overflow-wrap:anywhere]">
+                  <span className="font-semibold text-gray-800 text-base sm:text-lg break-words [overflow-wrap:anywhere] dark:text-white">
                     EGP {item.price}
                   </span>
                   <div className="flex items-center justify-end gap-3 flex-wrap">

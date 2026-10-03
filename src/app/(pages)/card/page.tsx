@@ -206,7 +206,7 @@ export default function ShoppingCart() {
                     </div>
 
                     <div className="flex w-full sm:w-auto flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 min-w-0">
-                      <div className="text-base sm:text-lg font-semibold break-words [overflow-wrap:anywhere]">{formatCurrency(product.price)}</div>
+                      <div className="text-base sm:text-lg font-semibold break-words [overflow-wrap:anywhere] dark:text-white">{formatCurrency(product.price)}</div>
 
                       <button
                         type="button"

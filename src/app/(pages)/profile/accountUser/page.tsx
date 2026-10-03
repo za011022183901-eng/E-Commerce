@@ -91,16 +91,16 @@ const validateField = (name: string, value: string) => {
 
   
   return (
-    <main className="relative max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-48 border border-gray-200">
+    <main className="relative max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-48 border border-gray-200 dark:bg-slate-900 dark:border-slate-700">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2 dark:text-slate-50">
           <User className="text-blue-500" />
           Personal Information
         </h2>
 
         <Dialog>
           <DialogTrigger asChild>
-            <button className="inline-flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm transition">
+            <button className="inline-flex items-center gap-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1.5 rounded-md shadow-sm transition dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100">
               <Pencil size={16} />
               Edit
             </button>
@@ -176,27 +176,27 @@ const validateField = (name: string, value: string) => {
         </Dialog>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-md flex items-center gap-4 mb-4">
+      <div className="bg-blue-50 p-4 rounded-md flex items-center gap-4 mb-4 dark:bg-slate-800 dark:border dark:border-blue-400/30">
         <User className="text-blue-500" />
         <div>
-          <p className="text-sm text-gray-500">Full Name</p>
-          <p className="text-lg font-medium">{session?.user?.name}</p>
+          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Full Name</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">{session?.user?.name}</p>
         </div>
       </div>
 
-      <div className="bg-green-50 p-4 rounded-md flex items-center gap-4 mb-4">
+      <div className="bg-green-50 p-4 rounded-md flex items-center gap-4 mb-4 dark:bg-slate-800 dark:border dark:border-emerald-400/30">
         <Mail className="text-green-500" />
         <div>
-          <p className="text-sm text-gray-500">Email Address</p>
-          <p className="text-lg font-medium break-all">{session?.user?.email}</p>
+          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Email Address</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-white break-all">{session?.user?.email}</p>
         </div>
       </div>
 
-      <div className="bg-purple-50 p-4 rounded-md flex items-center gap-4">
+      <div className="bg-purple-50 p-4 rounded-md flex items-center gap-4 dark:bg-slate-800 dark:border dark:border-purple-400/30">
         <Shield className="text-purple-500" />
         <div>
-          <p className="text-sm text-gray-500">Account Role</p>
-          <span className="text-sm px-3 py-1 rounded-full bg-purple-600 text-white font-semibold inline-block">
+          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Account Role</p>
+          <span className="text-sm px-3 py-1 rounded-full bg-purple-600 text-white font-semibold inline-block dark:bg-purple-500 dark:text-white">
             Regular User
           </span>
         </div>

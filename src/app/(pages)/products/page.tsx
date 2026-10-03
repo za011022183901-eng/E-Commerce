@@ -168,8 +168,8 @@ export default function Products() {
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
                       <div className="flex flex-col">
                         <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Price</span>
-                        <p className="font-black text-gray-950 text-3xl tracking-tighter">
-                          {product.price} <span className="text-sm text-green-500 font-bold ml-0.5">EGP</span>
+                        <p className="font-black text-gray-950 text-3xl tracking-tighter dark:text-white">
+                          {product.price} <span className="text-sm text-green-500 font-bold ml-0.5 dark:text-white">EGP</span>
                         </p>
                       </div>
 
