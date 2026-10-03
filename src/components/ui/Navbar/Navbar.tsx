@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 // إضافة الأيقونات الجديدة هنا
-import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu } from "lucide-react"
+import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu, Moon, Sun } from "lucide-react"
 import { useContext, useState, useEffect } from "react"
 import { cartContext } from "@/components/context/CartContext"
 import { signOut, useSession } from "next-auth/react"
@@ -23,6 +23,20 @@ export default function Navbar() {
   const [showNavbar, setShowNavbar] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    const shouldUseDark = localStorage.getItem("shopmart-theme") === "dark"
+    setIsDark(shouldUseDark)
+    document.documentElement.classList.toggle("dark", shouldUseDark)
+  }, [])
+
+  const toggleTheme = () => {
+    const nextIsDark = !document.documentElement.classList.contains("dark")
+    document.documentElement.classList.toggle("dark", nextIsDark)
+    localStorage.setItem("shopmart-theme", nextIsDark ? "dark" : "light")
+    setIsDark(nextIsDark)
+  }
 
   const isAuthenticated = session.status === "authenticated"
   const userName = session.data?.user?.name?.split(" ")[0]
@@ -52,7 +66,7 @@ export default function Navbar() {
       onMouseLeave={() => setIsHovering(false)}
       className={`fixed top-0 left-0 w-full z-[1000] transition-transform duration-500 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
-      } py-4 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200`}
+      } py-4 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 dark:border-slate-800`}
     >
       <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 px-3 sm:px-6">
         {/* ===== Logo + Mobile Icons ===== */}
@@ -66,6 +80,9 @@ export default function Navbar() {
 
           {/* ===== Mobile Menu + Icons ===== */}
           <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999]">
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-10 w-10 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700">
+              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            </button>
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
@@ -178,7 +195,11 @@ export default function Navbar() {
         </div>
 
         {/* ===== Right Icons (Desktop) ===== */}
-        <div className="hidden md:flex items-center gap-6 justify-end">
+        <div className="hidden md:flex items-center gap-4 justify-end">
+          <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="group relative grid h-10 w-10 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition duration-300 hover:scale-105 hover:border-emerald-300 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:border-amber-400/40 dark:hover:bg-slate-700">
+            <span className="absolute inset-0 rounded-full bg-emerald-400/10 opacity-0 blur-md transition group-hover:opacity-100 dark:bg-amber-300/10" />
+            {isDark ? <Sun className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-45" /> : <Moon className="relative h-5 w-5 transition-transform duration-300 group-hover:-rotate-12" />}
+          </button>
           {isAuthenticated ? (
             <>
               {/* User Dropdown */}

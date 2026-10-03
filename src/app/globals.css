@@ -82,6 +82,74 @@ html { scroll-behavior: smooth; }
 
 body {
   background: radial-gradient(circle at 82% 6%, rgb(209 250 229 / 0.7), transparent 25rem), linear-gradient(180deg, #f8fafc 0%, #ffffff 35%, #f8fafc 100%);
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+html.dark body {
+  background: radial-gradient(circle at 82% 6%, rgb(6 78 59 / 0.08), transparent 25rem), linear-gradient(180deg, #010207 0%, #070a12 48%, #010207 100%);
+  color: #f1f5f9;
+}
+
+html.dark main[class~="bg-gradient-to-br"] {
+  background-image: linear-gradient(135deg, #070d17 0%, #0a111d 52%, #07131a 100%) !important;
+}
+
+html.dark main.min-h-screen.bg-white,
+html.dark div.min-h-screen.bg-white {
+  background-color: #070a12 !important;
+}
+
+/* Keep legacy pages that use fixed Tailwind light colors readable in dark mode. */
+@layer utilities {
+  html.dark .bg-white { background-color: #111c2e !important; }
+  html.dark .bg-white\/80,
+  html.dark .bg-white\/85,
+  html.dark .bg-white\/90,
+  html.dark .bg-white\/95 { background-color: rgb(17 28 46 / 0.94) !important; }
+  html.dark [class~="bg-white/10"],
+  html.dark [class~="bg-white/20"],
+  html.dark [class~="bg-white/30"],
+  html.dark [class~="bg-white/50"],
+  html.dark [class~="bg-white/60"],
+  html.dark [class~="bg-white/70"],
+  html.dark [class~="bg-white/75"],
+  html.dark [class~="bg-white/[.96]"],
+  html.dark [class~="bg-white/80"] { background-color: rgb(17 28 46 / 0.94) !important; }
+  html.dark .bg-gray-50,
+  html.dark .bg-slate-50 { background-color: #0f172a !important; }
+  html.dark [class~="bg-gray-50/30"],
+  html.dark [class~="bg-gray-50/50"],
+  html.dark [class~="bg-gray-50/70"],
+  html.dark [class~="bg-gray-100/50"],
+  html.dark [class~="bg-slate-50/75"] { background-color: rgb(15 23 42 / 0.88) !important; }
+  html.dark .bg-gray-100,
+  html.dark .bg-slate-100 { background-color: #1e293b !important; }
+  html.dark .text-gray-900,
+  html.dark .text-gray-800,
+  html.dark .text-slate-900,
+  html.dark .text-slate-950 { color: #f8fafc !important; }
+  html.dark .text-gray-700,
+  html.dark .text-gray-600,
+  html.dark .text-slate-700,
+  html.dark .text-slate-600,
+  html.dark .text-slate-500,
+  html.dark .text-gray-500 { color: #dbe4f0 !important; }
+  html.dark .border-gray-100,
+  html.dark .border-gray-200,
+  html.dark .border-slate-200,
+  html.dark .border-white,
+  html.dark .border-emerald-100,
+  html.dark .border-emerald-200 { border-color: #334155 !important; }
+  html.dark input,
+  html.dark textarea,
+  html.dark select { color: #f1f5f9; }
+  html.dark input::placeholder,
+  html.dark textarea::placeholder { color: #94a3b8; }
+  /* Keep product, brand, and category images vivid against dark surfaces. */
+  html.dark img.mix-blend-multiply {
+    mix-blend-mode: normal;
+    filter: brightness(1.12) contrast(1.06) saturate(1.12);
+  }
 }
 
 .hero-orb { position: absolute; border-radius: 9999px; filter: blur(2px); pointer-events: none; }
