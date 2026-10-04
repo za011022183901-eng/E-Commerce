@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 // إضافة الأيقونات الجديدة هنا
 import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu, Moon, Sun, Search } from "lucide-react"
-import { useContext, useState, useEffect } from "react"
+import { useContext, useState, useEffect, useRef } from "react"
 import { cartContext } from "@/components/context/CartContext"
 import { signOut, useSession } from "next-auth/react"
 
@@ -21,8 +21,8 @@ export default function Navbar() {
   const { loading, cartData, wishlistData } = useContext(cartContext)
 
   const [showNavbar, setShowNavbar] = useState(true)
-  const [lastScrollY, setLastScrollY] = useState(0)
-  const [isHovering, setIsHovering] = useState(false)
+  const lastScrollY = useRef(0)
+  const isHovering = useRef(false)
   const [isDark, setIsDark] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -45,17 +45,20 @@ export default function Navbar() {
   // التحكم في إخفاء Navbar عند التمرير
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY && !isHovering) {
-        setShowNavbar(false)
-      } else {
+      const currentScrollY = window.scrollY
+      const isSmallScreen = window.matchMedia("(max-width: 767px)").matches
+
+      if (currentScrollY <= 8 || currentScrollY < lastScrollY.current) {
         setShowNavbar(true)
+      } else if (currentScrollY > lastScrollY.current && (isSmallScreen || !isHovering.current)) {
+        setShowNavbar(false)
       }
-      setLastScrollY(window.scrollY)
+      lastScrollY.current = currentScrollY
     }
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [lastScrollY, isHovering])
+  }, [])
 
   const guestButtonClass =
     "px-5 py-2.5 border border-green-500 text-green-500 rounded-lg font-medium hover:bg-green-500 hover:text-white transition-colors"
@@ -63,33 +66,36 @@ export default function Navbar() {
 
   return (
     <nav
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={() => {
+        isHovering.current = true
+        if (window.matchMedia("(min-width: 768px)").matches) setShowNavbar(true)
+      }}
+      onMouseLeave={() => { isHovering.current = false }}
       className={`fixed top-0 left-0 w-full z-[1000] transition-transform duration-500 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
-      } py-4 max-[380px]:py-0 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 dark:border-slate-800`}
+      } py-4 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 dark:border-slate-800`}
     >
       <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 px-3 sm:px-6">
         {/* ===== Logo + Mobile Icons ===== */}
         <div className="flex items-center justify-between w-full md:w-auto">
           <Link href={"/"}>
-            <div className="flex items-center gap-2 cursor-pointer">
-              <ShoppingCart className="text-green-500 w-8 h-8" />
-              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-wide">ShopMart</h1>
+            <div className="flex items-center gap-2 cursor-pointer max-[380px]:gap-1">
+              <ShoppingCart className="text-green-500 w-8 h-8 max-[380px]:h-6 max-[380px]:w-6" />
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-wide max-[380px]:text-lg max-[380px]:tracking-normal">ShopMart</h1>
             </div>
           </Link>
 
           {/* ===== Mobile Menu + Icons ===== */}
-          <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999] max-[380px]:grid max-[380px]:grid-cols-[repeat(3,2.5rem)] max-[380px]:grid-rows-[repeat(2,2.5rem)] max-[380px]:gap-1 max-[380px]:items-center">
+          <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999] max-[380px]:shrink-0 max-[380px]:gap-1">
             <div className="flex items-center gap-3 sm:gap-5 max-[380px]:contents">
-            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className={`grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:col-start-2 max-[380px]:row-start-1 max-[380px]:h-10 max-[380px]:w-10 ${isAuthenticated ? "" : "max-[380px]:translate-y-3.5"}`}>
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:h-8 max-[380px]:w-8 max-[380px]:shrink-0">
               {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
             </button>
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="outline-0 relative z-[10001] flex items-center gap-2 max-[380px]:col-start-3 max-[380px]:row-start-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center max-[380px]:rounded-full max-[380px]:border max-[380px]:border-gray-200 max-[380px]:bg-white/80 max-[380px]:shadow-sm dark:max-[380px]:border-slate-700 dark:max-[380px]:bg-slate-800">
+                  <DropdownMenuTrigger className="outline-0 relative z-[10001] flex items-center gap-2 max-[380px]:grid max-[380px]:h-8 max-[380px]:w-8 max-[380px]:shrink-0 max-[380px]:place-items-center max-[380px]:rounded-full max-[380px]:border max-[380px]:border-gray-200 max-[380px]:bg-white/80 max-[380px]:shadow-sm dark:max-[380px]:border-slate-700 dark:max-[380px]:bg-slate-800">
                     <UserIcon className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
                     {(session?.data?.user?.name || userName) && (
                       <span className="hidden sm:inline text-base font-semibold text-gray-700">
@@ -109,13 +115,13 @@ export default function Navbar() {
                 </DropdownMenu>
 
                 {/* Wishlist Icon */}
-                <div className="relative max-[380px]:col-start-1 max-[380px]:row-start-2 max-[380px]:translate-y-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
-                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
+                <div className="relative max-[380px]:grid max-[380px]:h-8 max-[380px]:w-8 max-[380px]:shrink-0 max-[380px]:place-items-center">
+                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs max-[380px]:-right-1 max-[380px]:-top-1 max-[380px]:h-4 max-[380px]:w-4 max-[380px]:text-[9px]">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : wishlistData?.count || 0}
                   </Badge>
                   <Link href="/Wishlist">
                     <HeartIcon
-                      className={`w-7 h-7 transition ${
+                      className={`w-7 h-7 max-[380px]:h-6 max-[380px]:w-6 transition ${
                         wishlistData?.count! > 0
                           ? "text-red-500 fill-red-500"
                           : "text-gray-700 hover:text-green-500"
@@ -125,13 +131,13 @@ export default function Navbar() {
                 </div>
 
                 {/* Cart Icon */}
-                <div className="relative max-[380px]:col-start-2 max-[380px]:row-start-2 max-[380px]:translate-y-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
-                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
+                <div className="relative max-[380px]:grid max-[380px]:h-8 max-[380px]:w-8 max-[380px]:shrink-0 max-[380px]:place-items-center">
+                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs max-[380px]:-right-1 max-[380px]:-top-1 max-[380px]:h-4 max-[380px]:w-4 max-[380px]:text-[9px]">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : cartData?.numOfCartItems || 0}
                   </Badge>
                   <Link href="/card">
                     <ShoppingCart
-                      className={`w-7 h-7 transition ${
+                      className={`w-7 h-7 max-[380px]:h-6 max-[380px]:w-6 transition ${
                       (cartData?.numOfCartItems ?? 0) > 0 ? "text-green-500 fill-green-500" : "text-gray-700 hover:text-green-500"
                       }`}
                     />
@@ -142,7 +148,7 @@ export default function Navbar() {
               <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
             ) : null}
             <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Open navigation menu" className={`grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:col-start-3 max-[380px]:h-10 max-[380px]:w-10 ${isAuthenticated ? "max-[380px]:row-start-2 max-[380px]:translate-y-1" : "max-[380px]:row-start-1 max-[380px]:translate-y-3.5"}`}>
+              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:h-8 max-[380px]:w-8 max-[380px]:shrink-0">
                 <Menu className="h-7 w-7" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-[1001] w-52">

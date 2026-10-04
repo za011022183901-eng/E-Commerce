@@ -90,6 +90,15 @@ html.dark body {
   color: #f1f5f9;
 }
 
+.login-page-background {
+  background: radial-gradient(circle at 15% 15%, rgb(16 185 129 / 0.16), transparent 30rem), linear-gradient(135deg, #ecfdf5 0%, #ffffff 48%, #ecfeff 100%);
+  transition: background 250ms ease;
+}
+
+html.dark .login-page-background {
+  background: radial-gradient(circle at 15% 15%, rgb(16 185 129 / 0.18), transparent 30rem), linear-gradient(135deg, #071a15 0%, #07111f 52%, #07131a 100%);
+}
+
 html.dark main[class~="bg-gradient-to-br"] {
   background-image: linear-gradient(135deg, #070d17 0%, #0a111d 52%, #07131a 100%) !important;
 }
