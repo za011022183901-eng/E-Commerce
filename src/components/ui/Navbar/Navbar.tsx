@@ -82,7 +82,7 @@ export default function Navbar() {
           {/* ===== Mobile Menu + Icons ===== */}
           <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999] max-[380px]:grid max-[380px]:grid-cols-[repeat(3,2.5rem)] max-[380px]:grid-rows-[repeat(2,2.5rem)] max-[380px]:gap-1 max-[380px]:items-center">
             <div className="flex items-center gap-3 sm:gap-5 max-[380px]:contents">
-            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:col-start-2 max-[380px]:row-start-1 max-[380px]:h-10 max-[380px]:w-10">
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className={`grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:col-start-2 max-[380px]:row-start-1 max-[380px]:h-10 max-[380px]:w-10 ${isAuthenticated ? "" : "max-[380px]:translate-y-3.5"}`}>
               {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
             </button>
             {isAuthenticated ? (
@@ -109,7 +109,7 @@ export default function Navbar() {
                 </DropdownMenu>
 
                 {/* Wishlist Icon */}
-                <div className="relative max-[380px]:col-start-1 max-[380px]:row-start-2 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
+                <div className="relative max-[380px]:col-start-1 max-[380px]:row-start-2 max-[380px]:translate-y-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
                   <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : wishlistData?.count || 0}
                   </Badge>
@@ -125,7 +125,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Cart Icon */}
-                <div className="relative max-[380px]:col-start-2 max-[380px]:row-start-2 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
+                <div className="relative max-[380px]:col-start-2 max-[380px]:row-start-2 max-[380px]:translate-y-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
                   <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : cartData?.numOfCartItems || 0}
                   </Badge>
@@ -142,7 +142,7 @@ export default function Navbar() {
               <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
             ) : null}
             <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:col-start-3 max-[380px]:row-start-2 max-[380px]:h-10 max-[380px]:w-10">
+              <DropdownMenuTrigger aria-label="Open navigation menu" className={`grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:col-start-3 max-[380px]:h-10 max-[380px]:w-10 ${isAuthenticated ? "max-[380px]:row-start-2 max-[380px]:translate-y-1" : "max-[380px]:row-start-1 max-[380px]:translate-y-3.5"}`}>
                 <Menu className="h-7 w-7" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-[1001] w-52">
