@@ -12,6 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import ProductImage from "@/components/ProductImage/ProductImage";
 import Loading from "@/components/Loadingg/page";
 
 export default function AllOrders() {
@@ -65,7 +66,7 @@ export default function AllOrders() {
 
   return (
     <div className="px-6 md:px-12 lg:px-20 pt-16 pb-10 bg-gradient-to-br min-h-screen">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-screen-2xl mx-auto">
         <header className="mb-12 text-center">
           <h1 className="text-5xl md:text-6xl mt-4 md:mt-20 font-extrabold leading-tight text-green-700">
             All Orders
@@ -114,11 +115,8 @@ export default function AllOrders() {
                     whileHover={{ scale: 1.05 }}
                     className="w-full md:w-1/4 flex-shrink-0 overflow-hidden rounded-2xl shadow-lg bg-gray-100"
                   >
-                    <img
-                      src={
-                        item.product?.imageCover ||
-                        "https://via.placeholder.com/400x300?text=Order+Image"
-                      }
+                    <ProductImage
+                      src={item.product?.imageCover}
                       alt={item.product?.title || "Order image"}
                       className="object-cover w-full h-60"
                     />

@@ -28,14 +28,14 @@ export default function ProductGallery({ images, title }: GalleryProps) {
       {/* ===== الصورة الكبيرة فوق ===== */}
       <div className="relative flex w-full items-center justify-center rounded-3xl border border-gray-100/80 bg-gray-50/70 p-3 sm:p-5 md:p-16">
         <div className="w-full max-w-lg relative group">
-          <AnimatePresence mode="wait"><motion.img key={activeImage} initial={{ opacity: 0, scale: .94, rotate: -1 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: 1.04 }} transition={{ duration: .34, ease: [0.22, 1, 0.36, 1] }} src={activeImage} alt={title} className="h-[230px] w-full object-contain mix-blend-multiply transition-all duration-500 ease-out sm:h-[280px] md:h-[480px] md:group-hover:scale-105" /></AnimatePresence>
+          <AnimatePresence mode="wait"><motion.img key={activeImage} initial={{ opacity: 0, scale: .94, rotate: -1 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: 1.04 }} transition={{ duration: .34, ease: [0.22, 1, 0.36, 1] }} src={activeImage} alt={title} className="h-[230px] w-full object-contain mix-blend-multiply transition-all duration-500 ease-out sm:h-[280px] md:h-[500px] md:group-hover:scale-105" /></AnimatePresence>
         </div>
       </div>
 
       {/* ===== الصور الصغيرة تحت (متوسطة ومظبوطة بالظبط) ===== */}
       <div className="w-full px-2">
         <Carousel opts={{ align: "start", loop: false }} className="w-full">
-          <CarouselContent className={`-ml-2 flex md:-ml-3 ${galleryImages.length <= 3 ? "justify-center" : "justify-start"}`}>
+          <CarouselContent className={`-ml-2 flex md:-ml-3 ${galleryImages.length <= 4 ? "justify-center" : "justify-start"}`}>
             {galleryImages.map((img, i) => (
               <CarouselItem key={i} className="basis-1/4 max-w-[120px] pl-2 sm:basis-1/4 md:basis-1/4 md:pl-3 lg:basis-1/5">
                 <button

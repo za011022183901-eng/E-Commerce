@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 // إضافة الأيقونات الجديدة هنا
-import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu, Moon, Sun } from "lucide-react"
+import { ShoppingCart, UserIcon, HeartIcon, Loader2, ShoppingBag, LayoutGrid, Award, Menu, Moon, Sun, Search } from "lucide-react"
 import { useContext, useState, useEffect } from "react"
 import { cartContext } from "@/components/context/CartContext"
 import { signOut, useSession } from "next-auth/react"
@@ -24,6 +24,7 @@ export default function Navbar() {
   const [lastScrollY, setLastScrollY] = useState(0)
   const [isHovering, setIsHovering] = useState(false)
   const [isDark, setIsDark] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
     const shouldUseDark = localStorage.getItem("shopmart-theme") === "dark"
@@ -57,8 +58,8 @@ export default function Navbar() {
   }, [lastScrollY, isHovering])
 
   const guestButtonClass =
-    "px-4 py-2 border border-green-500 text-green-500 rounded-lg font-medium hover:bg-green-500 hover:text-white transition-colors"
-  const activeButtonClass = "px-4 py-2 bg-green-500 text-white rounded-lg font-medium"
+    "px-5 py-2.5 border border-green-500 text-green-500 rounded-lg font-medium hover:bg-green-500 hover:text-white transition-colors"
+  const activeButtonClass = "px-5 py-2.5 bg-green-500 text-white rounded-lg font-medium"
 
   return (
     <nav
@@ -73,22 +74,22 @@ export default function Navbar() {
         <div className="flex items-center justify-between w-full md:w-auto">
           <Link href={"/"}>
             <div className="flex items-center gap-2 cursor-pointer">
-              <ShoppingCart className="text-green-500 w-7 h-7" />
-              <h1 className="text-xl sm:text-2xl font-extrabold text-gray-800 tracking-wide">ShopMart</h1>
+              <ShoppingCart className="text-green-500 w-8 h-8" />
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-800 tracking-wide">ShopMart</h1>
             </div>
           </Link>
 
           {/* ===== Mobile Menu + Icons ===== */}
           <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999]">
-            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-10 w-10 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700">
-              {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700">
+              {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
             </button>
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
                 <DropdownMenu>
                   <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2">
-                    <UserIcon className="w-6 h-6 text-gray-700 hover:text-green-500 transition" />
+                    <UserIcon className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
                     {(session?.data?.user?.name || userName) && (
                       <span className="hidden sm:inline text-base font-semibold text-gray-700">
                         {session?.data?.user?.name?.split(" ")[0] || userName}
@@ -100,7 +101,7 @@ export default function Navbar() {
                     <Link href="/profile">
                       <DropdownMenuItem>Profile</DropdownMenuItem>
                     </Link>
-                    <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
+                    <DropdownMenuItem onClick={() => signOut({ redirectTo: "/login" })}>
                       Logout
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -108,12 +109,12 @@ export default function Navbar() {
 
                 {/* Wishlist Icon */}
                 <div className="relative">
-                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-5 w-5 flex items-center justify-center rounded-full text-xs">
+                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : wishlistData?.count || 0}
                   </Badge>
                   <Link href="/Wishlist">
                     <HeartIcon
-                      className={`w-6 h-6 transition ${
+                      className={`w-7 h-7 transition ${
                         wishlistData?.count! > 0
                           ? "text-red-500 fill-red-500"
                           : "text-gray-700 hover:text-green-500"
@@ -124,12 +125,12 @@ export default function Navbar() {
 
                 {/* Cart Icon */}
                 <div className="relative">
-                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-5 w-5 flex items-center justify-center rounded-full text-xs">
+                  <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : cartData?.numOfCartItems || 0}
                   </Badge>
                   <Link href="/card">
                     <ShoppingCart
-                      className={`w-6 h-6 transition ${
+                      className={`w-7 h-7 transition ${
                       (cartData?.numOfCartItems ?? 0) > 0 ? "text-green-500 fill-green-500" : "text-gray-700 hover:text-green-500"
                       }`}
                     />
@@ -141,8 +142,8 @@ export default function Navbar() {
             ) : null}
 
             <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-10 w-10 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500">
-                <Menu className="h-6 w-6" />
+              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500">
+                <Menu className="h-7 w-7" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-[1001] w-52">
                 {[
@@ -167,18 +168,18 @@ export default function Navbar() {
         </div>
 
         {/* ===== Center Links (Desktop) ===== */}
-        <div className="hidden md:flex items-center gap-2 mx-auto">
+        <div className="hidden md:flex items-center gap-3 mx-auto">
           {[
-            { href: "/products", label: "Products", icon: <ShoppingBag className="w-4 h-4" /> },
-            { href: "/categories", label: "Categories", icon: <LayoutGrid className="w-4 h-4" /> },
-            { href: "/brands", label: "Brands", icon: <Award className="w-4 h-4" /> }
+            { href: "/products", label: "Products", icon: <ShoppingBag className="w-5 h-5" /> },
+            { href: "/categories", label: "Categories", icon: <LayoutGrid className="w-5 h-5" /> },
+            { href: "/brands", label: "Brands", icon: <Award className="w-5 h-5" /> }
           ].map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-2 rounded-lg font-semibold flex items-center gap-2 transition-all duration-300 ${
+                className={`px-5 py-2.5 rounded-lg font-semibold flex items-center gap-2.5 transition-all duration-300 ${
                   isActive
                     ? "bg-green-500 text-white shadow-md shadow-green-500/20"
                     : "text-gray-700 hover:bg-green-50 hover:text-green-600"
@@ -196,16 +197,16 @@ export default function Navbar() {
 
         {/* ===== Right Icons (Desktop) ===== */}
         <div className="hidden md:flex items-center gap-4 justify-end">
-          <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="group relative grid h-10 w-10 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition duration-300 hover:scale-105 hover:border-emerald-300 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:border-amber-400/40 dark:hover:bg-slate-700">
+          <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="group relative grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition duration-300 hover:scale-105 hover:border-emerald-300 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:border-amber-400/40 dark:hover:bg-slate-700">
             <span className="absolute inset-0 rounded-full bg-emerald-400/10 opacity-0 blur-md transition group-hover:opacity-100 dark:bg-amber-300/10" />
-            {isDark ? <Sun className="relative h-5 w-5 transition-transform duration-500 group-hover:rotate-45" /> : <Moon className="relative h-5 w-5 transition-transform duration-300 group-hover:-rotate-12" />}
+            {isDark ? <Sun className="relative h-6 w-6 transition-transform duration-500 group-hover:rotate-45" /> : <Moon className="relative h-6 w-6 transition-transform duration-300 group-hover:-rotate-12" />}
           </button>
           {isAuthenticated ? (
             <>
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2">
-                  <UserIcon className="w-6 h-6 text-gray-700 hover:text-green-500 transition" />
+                  <UserIcon className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
                   {(session?.data?.user?.name || userName) && (
                     <span className="text-xl font-semibold text-gray-700">
                       {session?.data?.user?.name?.split(" ")[0] || userName}
@@ -217,7 +218,7 @@ export default function Navbar() {
                   <Link href={"/profile"}>
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/login" })}>
+                  <DropdownMenuItem onClick={() => signOut({ redirectTo: "/login" })}>
                     Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -225,12 +226,12 @@ export default function Navbar() {
 
               {/* Wishlist */}
               <div className="relative cursor-pointer">
-                <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-5 w-5 flex items-center justify-center rounded-full text-xs">
+              <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                   {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : wishlistData?.count || 0}
                 </Badge>
                 <Link href={"/Wishlist"}>
                   <HeartIcon
-                    className={`w-6 h-6 transition ${
+                    className={`w-7 h-7 transition ${
                       (wishlistData?.count ?? 0) > 0
                         ? "text-red-500 fill-red-500"
                         : "text-gray-500 hover:text-red-400"
@@ -241,12 +242,12 @@ export default function Navbar() {
 
               {/* Cart */}
               <div className="relative cursor-pointer">
-                <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-5 w-5 flex items-center justify-center rounded-full text-xs">
+              <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                   {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : cartData?.numOfCartItems || 0}
                 </Badge>
                 <Link href="/card">
                   <ShoppingCart
-                    className={`w-6 h-6 transition ${
+                    className={`w-7 h-7 transition ${
                       cartData?.numOfCartItems! > 0
                         ? "text-green-500 fill-green-500"
                         : "text-gray-700 hover:text-green-500"

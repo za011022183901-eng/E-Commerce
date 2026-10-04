@@ -35,7 +35,7 @@ export function LoginForm() {
       const result = await signIn("credentials", { ...values, redirect: false, redirectTo: callbackUrl });
       if (result?.ok && !result.error) {
         toast.success("Welcome back! ✨");
-        window.location.assign(result.url ?? callbackUrl);
+        window.location.assign(callbackUrl);
       }
       else { 
         const message = result?.error === "CredentialsSignin"

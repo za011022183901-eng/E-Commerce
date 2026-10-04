@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { User, Mail, Shield, Pencil, Phone } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import toast from "react-hot-toast";
 import { updateProfileServerAction } from "../../card/_action/cartApi.action";
+import AddressesSection from "@/components/profile/AddressesSection";
 
 export default function Page() {
 
@@ -30,6 +31,11 @@ export default function Page() {
     email: session?.user?.email || "",
     phone: "", // يبدأ فاضي
   });
+
+  useEffect(() => {
+    if (!session?.user) return;
+    setFormData((current) => ({ ...current, name: session.user.name || "", email: session.user.email || "" }));
+  }, [session?.user?.name, session?.user?.email]);
 
   const [errors, setErrors] = useState({
     name: "",
@@ -78,7 +84,7 @@ const validateField = (name: string, value: string) => {
       const updatedUser = await updateProfileServerAction(formData); // Server Action
       if (updateSession) updateSession({ user: updatedUser });
       
-      signOut({ callbackUrl: "/login" })
+      await signOut({ redirectTo: "/login" })
 
       toast.success("Profile updated successfully!");
     } catch (err: any) {
@@ -91,10 +97,11 @@ const validateField = (name: string, value: string) => {
 
   
   return (
-    <main className="relative max-w-5xl mx-auto bg-white p-6 rounded-lg shadow-lg mt-48 border border-gray-200 dark:bg-slate-900 dark:border-slate-700">
+    <>
+    <main className="relative max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg mt-48 border border-gray-200 dark:bg-slate-900 dark:border-slate-700">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2 dark:text-slate-50">
-          <User className="text-blue-500" />
+        <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-3 dark:text-slate-50">
+          <User className="h-6 w-6 text-blue-500" />
           Personal Information
         </h2>
 
@@ -176,31 +183,35 @@ const validateField = (name: string, value: string) => {
         </Dialog>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-md flex items-center gap-4 mb-4 dark:bg-slate-800 dark:border dark:border-blue-400/30">
-        <User className="text-blue-500" />
+      <div className="bg-blue-50 p-5 rounded-md flex items-center gap-5 mb-5 dark:bg-slate-800 dark:border dark:border-blue-400/30">
+        <User className="h-6 w-6 text-blue-500" />
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Full Name</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">{session?.user?.name}</p>
+          <p className="text-base font-medium text-gray-500 dark:text-slate-300">Full Name</p>
+          <p className="text-xl font-semibold text-slate-900 dark:text-white">{session?.user?.name}</p>
         </div>
       </div>
 
-      <div className="bg-green-50 p-4 rounded-md flex items-center gap-4 mb-4 dark:bg-slate-800 dark:border dark:border-emerald-400/30">
-        <Mail className="text-green-500" />
+      <div className="bg-green-50 p-5 rounded-md flex items-center gap-5 mb-5 dark:bg-slate-800 dark:border dark:border-emerald-400/30">
+        <Mail className="h-6 w-6 text-green-500" />
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Email Address</p>
-          <p className="text-lg font-semibold text-slate-900 dark:text-white break-all">{session?.user?.email}</p>
+          <p className="text-base font-medium text-gray-500 dark:text-slate-300">Email Address</p>
+          <p className="text-xl font-semibold text-slate-900 dark:text-white break-all">{session?.user?.email}</p>
         </div>
       </div>
 
-      <div className="bg-purple-50 p-4 rounded-md flex items-center gap-4 dark:bg-slate-800 dark:border dark:border-purple-400/30">
-        <Shield className="text-purple-500" />
+      <div className="bg-purple-50 p-5 rounded-md flex items-center gap-5 dark:bg-slate-800 dark:border dark:border-purple-400/30">
+        <Shield className="h-6 w-6 text-purple-500" />
         <div>
-          <p className="text-sm font-medium text-gray-500 dark:text-slate-300">Account Role</p>
-          <span className="text-sm px-3 py-1 rounded-full bg-purple-600 text-white font-semibold inline-block dark:bg-purple-500 dark:text-white">
-            Regular User
+          <p className="text-base font-medium text-gray-500 dark:text-slate-300">Account Role</p>
+          <span className="text-base px-3 py-1 rounded-full bg-purple-600 text-white font-semibold inline-block dark:bg-purple-500 dark:text-white">
+            {session?.user?.role || "Regular User"}
           </span>
         </div>
       </div>
     </main>
+    <div className="mx-auto mt-8 max-w-6xl px-4 pb-16 sm:px-6">
+      <AddressesSection />
+    </div>
+    </>
   );
 }

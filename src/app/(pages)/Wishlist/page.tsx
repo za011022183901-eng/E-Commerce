@@ -6,6 +6,7 @@ import Link from "next/link";
 import AddAndRemoveWishlist from "@/components/AddAndRemoveWishlist/page";
 import AddToCart from "@/components/AddToCard/AdToCard";
 import { motion } from "framer-motion";
+import ProductImage from "@/components/ProductImage/ProductImage";
 
 export default function CartItem() {
   const { wishlistData, loading } = useContext(cartContext);
@@ -35,7 +36,7 @@ export default function CartItem() {
                 className="border rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-between items-stretch sm:items-center shadow-md bg-white w-full max-w-[1100px] min-w-0 hover:shadow-lg transition-all duration-300"
               >
                 <div className="flex items-center gap-4 sm:gap-6 min-w-0">
-                  <img
+                  <ProductImage
                     src={item.imageCover}
                     alt={item.title}
                     width={120}

@@ -34,7 +34,7 @@ export default function GetCartContext({ children }: { children: ReactNode }) {
 
   async function getCart() {
     try {
-      const response = await fetch("/api/get-cart", { credentials: "same-origin", cache: "no-store" });
+      const response = await fetch("/api/get-cart", { credentials: "same-origin", cache: "no-store", signal: AbortSignal.timeout(2000) });
       if (!response.ok) {
         const error = await response.json().catch(() => null);
         if (response.status === 401 && session.status === "authenticated") {
@@ -60,7 +60,7 @@ export default function GetCartContext({ children }: { children: ReactNode }) {
 
   async function getWishlist() {
     try {
-      const response = await fetch("/api/get-seshlist", { credentials: "same-origin", cache: "no-store" });
+      const response = await fetch("/api/get-seshlist", { credentials: "same-origin", cache: "no-store", signal: AbortSignal.timeout(2000) });
       if (!response.ok) {
         const error = await response.json().catch(() => null);
         if (response.status === 401 && session.status === "authenticated") {

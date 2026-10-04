@@ -101,7 +101,7 @@ export default function RegisterForm() {
 
   return (
     // تعديل الـ الحاوية الرئيسية: أضفنا pt-28 للموبايل و md:pt-36 للشاشات الأكبر عشان تبعد تماماً عن الـ Navbar
-    <div className="relative min-h-screen flex flex-col justify-start md:items-center px-4 sm:px-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/70 via-gray-50 to-slate-100 overflow-hidden pt-28 pb-16 md:pt-36">
+    <div className="relative min-h-screen flex flex-col justify-start md:items-center px-4 sm:px-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/70 via-gray-50 to-slate-100 dark:from-slate-950 dark:via-slate-950 dark:to-slate-900 overflow-hidden pt-28 pb-16 md:pt-36">
       
       {/* هالة ضوئية خلفية باللون الأخضر والأزرق الناعم جداً لإعطاء طابع الـ Premium */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[350px] bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-cyan-500/10 blur-[130px] rounded-full pointer-events-none" />
@@ -116,17 +116,17 @@ export default function RegisterForm() {
         className="w-full max-w-2xl relative z-10 mx-auto"
       >
         {/* الكارد الرئيسي زجاجي ناعم وبمساحات داخلية أوسع (p-10 md:p-14) */}
-        <div className="bg-white/85 backdrop-blur-2xl p-10 md:p-14 shadow-[0_20px_70px_rgb(5,46,22,0.10)] border border-emerald-100/70 rounded-[32px]">
+        <div className="bg-white/85 dark:bg-slate-900/90 backdrop-blur-2xl p-10 md:p-14 shadow-[0_20px_70px_rgb(5,46,22,0.10)] border border-emerald-100/70 dark:border-slate-700 rounded-[32px]">
           
           {/* الـ Header مع الأيقونة الخضراء */}
           <div className="flex flex-col items-center text-center mb-10">
             <div className="h-14 w-14 rounded-2xl bg-emerald-950 flex items-center justify-center shadow-xl shadow-emerald-950/10 mb-5">
               <ShieldCheck className="h-7 w-7 text-emerald-400" />
             </div>
-            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
               Create your account
             </h1>
-            <p className="text-gray-500 text-base mt-2">
+            <p className="text-gray-500 dark:text-slate-300 text-base mt-2">
               Join us today and experience the new standard.
             </p>
           </div>
@@ -138,7 +138,7 @@ export default function RegisterForm() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
-                className="bg-red-50/60 border border-red-200 text-red-700 text-sm p-4 rounded-xl mb-6 font-medium flex items-center gap-2.5"
+                className="bg-red-50/60 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-sm p-4 rounded-xl mb-6 font-medium flex items-center gap-2.5"
               >
                 <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
                 {errorMessage}
@@ -155,12 +155,12 @@ export default function RegisterForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="space-y-2">
-                    <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80">Full Name</FormLabel>
+                    <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80 dark:text-emerald-300">Full Name</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="John Doe"
                         {...field}
-                        className="h-13 rounded-xl border-gray-200 bg-white/60 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
+                        className="h-13 rounded-xl border-gray-200 bg-white/60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
                       />
                     </FormControl>
                     <FormMessage className="text-xs text-red-500 font-medium" />
@@ -175,13 +175,13 @@ export default function RegisterForm() {
                   name="email"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80">Email address</FormLabel>
+                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80 dark:text-emerald-300">Email address</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
                           placeholder="name@example.com"
                           {...field}
-                          className="h-13 rounded-xl border-gray-200 bg-white/60 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
+                          className="h-13 rounded-xl border-gray-200 bg-white/60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
                         />
                       </FormControl>
                       <FormMessage className="text-xs text-red-500 font-medium" />
@@ -194,12 +194,12 @@ export default function RegisterForm() {
                   name="phone"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80">Phone Number</FormLabel>
+                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80 dark:text-emerald-300">Phone Number</FormLabel>
                       <FormControl>
                         <Input
                           placeholder="01xxxxxxxxx"
                           {...field}
-                          className="h-13 rounded-xl border-gray-200 bg-white/60 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
+                          className="h-13 rounded-xl border-gray-200 bg-white/60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
                         />
                       </FormControl>
                       <FormMessage className="text-xs text-red-500 font-medium" />
@@ -215,13 +215,13 @@ export default function RegisterForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80">Password</FormLabel>
+                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80 dark:text-emerald-300">Password</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
                           placeholder="••••••••"
                           {...field}
-                          className="h-13 rounded-xl border-gray-200 bg-white/60 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
+                          className="h-13 rounded-xl border-gray-200 bg-white/60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
                         />
                       </FormControl>
                       <FormMessage className="text-xs text-red-500 font-medium" />
@@ -234,13 +234,13 @@ export default function RegisterForm() {
                   name="rePassword"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80">Confirm Password</FormLabel>
+                      <FormLabel className="text-xs font-bold uppercase tracking-widest text-emerald-800/80 dark:text-emerald-300">Confirm Password</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
                           placeholder="••••••••"
                           {...field}
-                          className="h-13 rounded-xl border-gray-200 bg-white/60 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
+                          className="h-13 rounded-xl border-gray-200 bg-white/60 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-400 focus-visible:ring-4 focus-visible:ring-emerald-500/10 focus-visible:border-emerald-600 transition-all duration-200 placeholder:text-gray-400 text-base"
                         />
                       </FormControl>
                       <FormMessage className="text-xs text-red-500 font-medium" />
@@ -268,11 +268,11 @@ export default function RegisterForm() {
           </Form>
 
           {/* رابط تسجيل الدخول السفلي */}
-          <p className="text-center text-gray-500 mt-10 text-base">
+          <p className="text-center text-gray-500 dark:text-slate-300 mt-10 text-base">
             Already have an account?{" "}
             <button
               onClick={() => router.push("/login")}
-              className="text-emerald-700 font-bold hover:text-emerald-800 hover:underline underline-offset-4 decoration-emerald-500 transition-all"
+              className="text-emerald-700 dark:text-emerald-300 font-bold hover:text-emerald-800 dark:hover:text-emerald-200 hover:underline underline-offset-4 decoration-emerald-500 transition-all"
             >
               Log in
             </button>

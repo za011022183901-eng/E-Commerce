@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { Params } from "next/dist/server/request/params";
 import { products as Product } from "@/interfaces/products";
+import ProductImage from "@/components/ProductImage/ProductImage";
 import {
   Card,
   CardContent,
@@ -52,7 +53,7 @@ export default async function BrandDetails({ params }: { params: Params }) {
           {/* ✅ الصورة */}
           <div className="overflow-hidden aspect-[4/5]">
             <Link href={`/products/${product._id}`}>
-              <img
+              <ProductImage
                 src={product.imageCover}
                 className="w-full h-full object-cover cursor-pointer transition-transform duration-300 hover:scale-105 rounded-t-2xl"
                 alt={product.title}

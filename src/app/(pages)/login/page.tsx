@@ -17,10 +17,10 @@ export default function LoginPage() {
       <motion.div animate={{ x: [0, 45, 0], y: [0, 28, 0] }} transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }} className="absolute -left-28 top-24 h-96 w-96 rounded-full bg-emerald-400/25 blur-3xl" />
       <motion.div animate={{ x: [0, -36, 0], y: [0, -22, 0] }} transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-24 bottom-0 h-96 w-96 rounded-full bg-cyan-400/20 blur-3xl" />
 
-      <div className="relative mx-auto grid min-h-[calc(100vh-9rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1fr_.88fr] lg:gap-20">
+      <div className="relative mx-auto grid min-h-[calc(100vh-9rem)] max-w-[1500px] items-center gap-12 lg:grid-cols-[1fr_.88fr] lg:gap-20">
         <motion.section initial={{ opacity: 0, x: -28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }} className="max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300/25 bg-white/10 px-4 py-2 text-sm font-bold text-emerald-200 backdrop-blur"><Sparkles size={16} /> Your everyday, elevated</span>
-          <h1 className="mt-7 text-5xl font-black leading-[.95] tracking-[-.06em] sm:text-6xl lg:text-7xl">Welcome back to the <span className="text-emerald-300">good stuff.</span></h1>
+          <h1 className="mt-7 text-6xl font-black leading-[.95] tracking-[-.06em] sm:text-7xl lg:text-8xl">Welcome back to the <span className="text-emerald-300">good stuff.</span></h1>
           <p className="mt-7 max-w-xl text-lg leading-8 text-slate-300 sm:text-xl">Sign in to continue discovering the pieces, prices, and little surprises chosen for you.</p>
           <div className="mt-10 space-y-3">
             {perks.map(({ icon: Icon, label }, index) => <motion.div key={label} initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 + index * 0.1 }} className="flex items-center gap-3 text-sm font-semibold text-slate-200"><span className="grid h-10 w-10 place-items-center rounded-xl bg-emerald-300 text-emerald-950"><Icon size={19} /></span>{label}</motion.div>)}

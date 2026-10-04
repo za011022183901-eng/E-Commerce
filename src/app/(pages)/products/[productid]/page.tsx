@@ -55,7 +55,7 @@ export default async function ProductsDetails({ params }: ProductPageProps) {
 
   return (
     <div className="min-h-screen bg-white flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 mt-12">
-      <div className="w-full max-w-7xl flex flex-col md:flex-row gap-12 lg:gap-16 items-start">
+      <div className="w-full max-w-[1440px] flex flex-col md:flex-row gap-12 lg:gap-16 items-start">
         
         {/* ===== الجزء الأيسر: تم نقل المعرض بالكامل للمكون الجديد ذو الـ State ===== */}
         <ProductGallery images={product.images ?? [product.imageCover]} title={product.title} />

@@ -3,6 +3,7 @@
 import React, { useContext, useRef, useState } from "react";
 import { formatCurrency } from "@/Helpers/format";
 import { cartContext } from "@/components/context/CartContext";
+import ProductImage from "@/components/ProductImage/ProductImage";
 import Loading from "@/components/Loadingg/page";
 import { Loader2, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -153,13 +154,7 @@ export default function ShoppingCart() {
                 {cartData?.data.products.map((product) => (
                   <div key={product._id} className={`flex flex-wrap items-center gap-4 sm:gap-6 rounded-xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm relative min-w-0 ${updatId === product.product._id ? "opacity-50 pointer-events-none" : ""}`}>
                     <div className="w-20 h-20 sm:w-28 sm:h-28 flex-shrink-0 rounded-md overflow-hidden bg-gray-50 flex items-center justify-center">
-                      {product.product?.imageCover ? (
-                        <img src={product.product.imageCover} alt={product.product.title || "Product"} className="object-cover w-full h-full" />
-                      ) : (
-                        <div className="animate-pulse bg-gray-200 w-full h-full flex items-center justify-center">
-                          <Loader2 className="animate-spin text-gray-400 w-6 h-6" />
-                        </div>
-                      )}
+                      <ProductImage src={product.product?.imageCover} alt={product.product.title || "Product"} className="object-cover w-full h-full" />
                     </div>
 
                     <div className="flex-1 min-w-0">

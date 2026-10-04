@@ -14,30 +14,57 @@ import {
 import AddToCart from "@/components/AddToCard/AdToCard";
 import AddAndRemoveWishlist from "@/components/AddAndRemoveWishlist/page";
 import AnimatedPageHeading from "@/components/AnimatedPageHeading/AnimatedPageHeading";
-import { ArrowUpRight, StarIcon } from 'lucide-react';
+import ProductImage from "@/components/ProductImage/ProductImage";
+import { getProductList } from "@/lib/clientProductData";
+import { ArrowUpRight, Search, StarIcon, X } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
 export const dynamic = "force-dynamic";
 
+function HighlightedText({ text, query }: { text: string; query: string }) {
+  const needle = query.trim();
+  if (!needle) return text;
+
+  const escapedNeedle = needle.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const parts = text.split(new RegExp(`(${escapedNeedle})`, "ig"));
+  return <>{parts.map((part, index) => part.toLocaleLowerCase() === needle.toLocaleLowerCase()
+    ? <mark key={`${index}-${part}`} className="rounded bg-emerald-200 px-0.5 text-emerald-950 dark:bg-emerald-300">{part}</mark>
+    : part)}</>;
+}
+
 export default function Products() {
   const [products, setProducts] = React.useState<ProductsType[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [apiError, setApiError] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
+  const [searchFocused, setSearchFocused] = React.useState(false);
+
+  React.useEffect(() => {
+    setSearchQuery(new URLSearchParams(window.location.search).get("q") ?? "");
+  }, []);
 
   // جلب البيانات في Client Component
   React.useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch("https://ecommerce.routemisr.com/api/v1/products");
-        const { data }: { data: ProductsType[] } = await response.json();
-        setProducts(data);
+        const result = await getProductList();
+        setProducts(result.data);
+        setApiError(result.unavailable);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setApiError(true);
       } finally {
         setLoading(false);
       }
     }
     fetchProducts();
   }, []);
+
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const filteredProducts = normalizedQuery
+    ? products.filter((product) => [product.title, product.description, product.category?.name, product.brand?.name]
+        .some((value) => value?.toLocaleLowerCase().includes(normalizedQuery)))
+    : products;
 
   // دالة طباعة النجوم ديناميكياً
   const renderStars = (rating: number) => {
@@ -101,7 +128,7 @@ export default function Products() {
         transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
         className="pointer-events-none absolute -right-24 top-64 h-96 w-96 rounded-full bg-cyan-200/40 blur-3xl"
       />
-      <section className="mx-auto max-w-[1400px]">
+      <section className="mx-auto max-w-[1680px]">
       <AnimatedPageHeading
         eyebrow="The ShopMart edit"
         title="Our Products"
@@ -109,31 +136,52 @@ export default function Products() {
         subtitle="Explore our latest trends and best sellers"
       />
 
+      <div className="relative z-30 mx-auto mb-8 max-w-xl">
+        <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-4 shadow-sm transition focus-within:border-emerald-400 focus-within:ring-4 focus-within:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-900/90">
+          <Search className="shrink-0 text-emerald-600" size={20} />
+          <input role="combobox" aria-controls="product-suggestions" value={searchQuery} onFocus={() => setSearchFocused(true)} onBlur={() => setTimeout(() => setSearchFocused(false), 150)} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search by product, brand, or category" aria-label="Search products" aria-autocomplete="list" aria-expanded={searchFocused && !!normalizedQuery} className="h-12 min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-100" />
+          {searchQuery && <button type="button" onMouseDown={(event) => event.preventDefault()} onClick={() => setSearchQuery("")} aria-label="Clear search" className="rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"><X size={17} /></button>}
+        </div>
+        {searchFocused && normalizedQuery && <div id="product-suggestions" role="listbox" aria-label="Product suggestions" className="absolute left-0 right-0 top-[calc(100%+8px)] max-h-96 overflow-y-auto rounded-2xl border border-emerald-100 bg-white p-2 shadow-2xl shadow-slate-900/15 dark:border-slate-700 dark:bg-slate-900">
+          {filteredProducts.slice(0, 7).map((product) => <Link key={product._id} role="option" aria-selected="false" href={`/products/${product.id}`} onMouseDown={(event) => event.preventDefault()} onClick={() => setSearchFocused(false)} className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 text-left transition hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none dark:hover:bg-slate-800 dark:focus:bg-slate-800">
+            <span className="min-w-0"><span className="block truncate text-sm font-semibold text-slate-900 dark:text-slate-100"><HighlightedText text={product.title} query={normalizedQuery} /></span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">{product.brand?.name || "ShopMart"} · {product.category?.name || "Product"}</span></span>
+            <ArrowUpRight className="shrink-0 text-emerald-600" size={17} />
+          </Link>)}
+          {!filteredProducts.length && <p className="px-4 py-5 text-sm text-slate-500 dark:text-slate-400">No matching products. Try another name.</p>}
+        </div>}
+      </div>
+      {!loading && !apiError && normalizedQuery && <p aria-live="polite" className="mx-auto mb-5 max-w-[1680px] text-sm text-slate-500 dark:text-slate-400">{filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found for “{searchQuery.trim()}”</p>}
+
       {/* ===== شبكة المنتجات مع أنيميشن الظهور ===== */}
       <AnimatePresence>
         {loading ? (
           <div className="flex justify-center items-center h-96 w-full">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
           </div>
+        ) : apiError ? (
+          <div role="alert" className="mx-auto flex min-h-72 max-w-2xl translate-y-3 flex-col items-center justify-center gap-3 rounded-3xl border border-red-100 bg-white/90 px-6 text-center shadow-sm">
+            <p className="text-xl font-bold text-gray-900">We couldn&apos;t load the products</p>
+            <p className="text-sm text-gray-600">The service is temporarily unavailable. We&apos;re working to fix it. Please refresh the page in a little while.</p>
+          </div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {products?.map((product) => (
+            {filteredProducts.length ? filteredProducts.map((product) => (
               <motion.div
                 key={product._id}
                 className="product-card group min-w-0"
                 variants={itemVariants}
                 whileHover={{ y: -8 }}
               >
-                <Card className="relative flex w-full flex-col justify-between gap-0 overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-3 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur transition-all duration-500 ease-out hover:border-green-300 hover:shadow-2xl hover:shadow-green-500/10">
+                <Card className="relative flex w-full flex-col justify-between gap-0 overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-5 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur transition-all duration-500 ease-out hover:border-green-300 hover:shadow-2xl hover:shadow-green-500/10">
                   {/* ===== صورة المنتج مع تأثير الهوفر ===== */}
-                  <div className="relative overflow-hidden bg-gray-50/50 rounded-t-2xl p-4 flex items-center justify-center h-64">
+                  <div className="relative overflow-hidden bg-gray-50/50 rounded-t-2xl p-4 flex items-center justify-center h-[19rem]">
                     <Link href={"/products/" + product.id} className="w-full h-full block relative">
-                      <img
+                      <ProductImage
                         src={product.imageCover}
                         alt={product.title}
                         className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 ease-out group-hover:scale-110"
@@ -158,7 +206,7 @@ export default function Products() {
                         {product.brand?.name || "Brand"}
                       </span>
                       <CardTitle className="text-base font-bold text-gray-800 line-clamp-1 transition-colors group-hover:text-green-600">
-                        {product.title}
+                        <HighlightedText text={product.title} query={normalizedQuery} />
                       </CardTitle>
                     </div>
                   </CardHeader>
@@ -197,7 +245,7 @@ export default function Products() {
                   </CardFooter>
                 </Card>
               </motion.div>
-            ))}
+            )) : <div className="col-span-full rounded-3xl border border-dashed border-slate-300 bg-white/80 px-6 py-16 text-center dark:border-slate-700 dark:bg-slate-900/70"><p className="text-lg font-bold text-slate-800 dark:text-slate-100">No products found</p><p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Try another product name, brand, or category.</p></div>}
           </motion.div>
         )}
       </AnimatePresence>
@@ -205,3 +253,4 @@ export default function Products() {
     </main>
   );
 }
+
