@@ -10,11 +10,6 @@ type CollectionItem = { _id: string; name: string; slug?: string; image: string 
 
 export default function CollectionShowcase({ items, kind }: { items: CollectionItem[]; kind: "brands" | "categories" }) {
   const isBrand = kind === "brands";
-  const usingFallback = items.length === 0;
-  const fallbackItems: CollectionItem[] = isBrand
-    ? ["Popular brands", "New arrivals", "ShopMart picks", "Everyday favorites"].map((name, index) => ({ _id: `fallback-brand-${index}`, name, image: "" }))
-    : ["Fashion", "Electronics", "Beauty", "Home & living"].map((name, index) => ({ _id: `fallback-category-${index}`, name, image: "" }));
-  const displayItems = usingFallback ? fallbackItems : items;
   const title = isBrand ? "Brands worth knowing." : "Find your next mood.";
   const subtitle = isBrand ? "A curated universe of names you already love—and the ones you are about to." : "Explore the collections that turn a quick browse into a great find.";
   const Icon = isBrand ? BadgeCheck : Layers3;
@@ -31,8 +26,8 @@ export default function CollectionShowcase({ items, kind }: { items: CollectionI
         subtitle={subtitle}
       />
       <motion.div variants={{ hidden: {}, show: { transition: { staggerChildren: .055 } } }} initial="hidden" animate="show" className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {displayItems.map((item) => <motion.article key={item._id} variants={{ hidden: { opacity: 0, y: 22, scale: .97 }, show: { opacity: 1, y: 0, scale: 1 } }} transition={{ duration: .42, ease: [0.22, 1, .36, 1] }} whileHover={{ y: -8 }} className="group relative overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-5 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur">
-          <Link href={usingFallback ? "/products" : `/${kind}/${item._id}`} className="block">
+        {items.map((item) => <motion.article key={item._id} variants={{ hidden: { opacity: 0, y: 22, scale: .97 }, show: { opacity: 1, y: 0, scale: 1 } }} transition={{ duration: .42, ease: [0.22, 1, .36, 1] }} whileHover={{ y: -8 }} className="group relative overflow-hidden rounded-[1.7rem] border border-white bg-white/80 p-5 shadow-[0_12px_35px_rgb(15,23,42,.08)] backdrop-blur">
+          <Link href={`/${kind}/${item._id}`} className="block">
             <div className={`relative overflow-hidden rounded-[1.25rem] ${isBrand ? "aspect-square bg-slate-50 p-9" : "aspect-[4/4.8] bg-slate-100"}`}>
               <ProductImage src={item.image} alt={item.name} className={`h-full w-full transition duration-700 group-hover:scale-110 ${isBrand ? "object-contain mix-blend-multiply" : "object-cover"}`} />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/35 via-transparent to-transparent opacity-0 transition duration-500 group-hover:opacity-100" />

@@ -8,12 +8,10 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 // استيراد المعرض الجديد (عدل المسار حسب مكان حفظك للملف)
 
-export const dynamic = "force-dynamic";
-
 type ProductPageProps = { params: Promise<{ productid: string }> };
 
 async function getProduct(productid: string): Promise<products | null> {
-  const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products/${encodeURIComponent(productid)}`, { cache: "no-store" });
+  const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products/${encodeURIComponent(productid)}`, { next: { revalidate: 600 } });
   if (!response.ok) return null;
   const payload = await response.json();
   return payload?.data ?? null;

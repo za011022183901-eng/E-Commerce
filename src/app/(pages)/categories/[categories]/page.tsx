@@ -23,26 +23,21 @@ export default function CategoryDetails() {
 
   const [categoryProducts, setCategoryProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     if (!categories) return;
     setLoading(true);
-    setApiError(false);
     async function fetchProducts() {
       try {
         const response = await fetch(
           `https://ecommerce.routemisr.com/api/v1/products?category=${categories}`,
-          { signal: AbortSignal.timeout(2000) }
+          { cache: "force-cache" }
         );
-        if (!response.ok) throw new Error(`Category API returned ${response.status}`);
-        const payload = await response.json();
-        if (!Array.isArray(payload?.data)) throw new Error("Invalid category response");
-        setCategoryProducts(payload.data);
+        const payload = response.ok ? await response.json() : null;
+        setCategoryProducts(Array.isArray(payload?.data) ? payload.data : []);
       } catch (error) {
         console.error("Error fetching category products:", error);
         setCategoryProducts([]);
-        setApiError(true);
       } finally {
         setLoading(false);
       }
@@ -68,24 +63,7 @@ export default function CategoryDetails() {
     return stars;
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[80vh] bg-white">
-        <Sparkles className="w-10 h-10 animate-spin text-green-500" />
-      </div>
-    );
-  }
-
-  if (apiError) {
-    return (
-      <div role="alert" className="flex min-h-[80vh] flex-col items-center justify-center gap-3 px-4 text-center text-gray-900">
-        <p className="text-xl font-extrabold">We couldn&apos;t load these products</p>
-        <p className="max-w-sm text-sm text-gray-500">The service is temporarily unavailable. We&apos;re working to fix it. Please try again shortly.</p>
-      </div>
-    );
-  }
-
-  if (categoryProducts.length === 0) {
+  if (!loading && categoryProducts.length === 0) {
     return (
       <div className="flex min-h-screen w-full flex-col items-center justify-center space-y-4 bg-gradient-to-br from-emerald-50 via-white to-cyan-50 px-4 pb-24 pt-28 text-center text-gray-900 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950">
         <div className="w-16 h-16 bg-green-50 text-green-500 rounded-full flex items-center justify-center border border-green-100 shadow-sm mb-2">
@@ -142,7 +120,7 @@ export default function CategoryDetails() {
           transition={{ duration: 0.4 }}
           className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-700 shadow-sm backdrop-blur mb-4"
         >
-          <Sparkles className="h-4 w-4 animate-spin text-slate-600" />
+          <Sparkles className="h-4 w-4 text-slate-600" />
           <span>Exclusive Collection</span>
         </motion.div>
         <motion.h2 

@@ -15,7 +15,6 @@ import AddToCart from "@/components/AddToCard/AdToCard";
 import AddAndRemoveWishlist from "@/components/AddAndRemoveWishlist/page";
 import AnimatedPageHeading from "@/components/AnimatedPageHeading/AnimatedPageHeading";
 import ProductImage from "@/components/ProductImage/ProductImage";
-import { getProductList } from "@/lib/clientProductData";
 import { ArrowUpRight, Search, StarIcon, X } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
@@ -35,7 +34,6 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 export default function Products() {
   const [products, setProducts] = React.useState<ProductsType[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [apiError, setApiError] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchFocused, setSearchFocused] = React.useState(false);
 
@@ -47,12 +45,11 @@ export default function Products() {
   React.useEffect(() => {
     async function fetchProducts() {
       try {
-        const result = await getProductList();
-        setProducts(result.data);
-        setApiError(result.unavailable);
+        const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", { cache: "force-cache" });
+        const { data }: { data: ProductsType[] } = await response.json();
+        setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
-        setApiError(true);
       } finally {
         setLoading(false);
       }
@@ -136,7 +133,7 @@ export default function Products() {
         subtitle="Explore our latest trends and best sellers"
       />
 
-      <div className="relative z-30 mx-auto mb-8 max-w-xl">
+      <div className="relative z-30 -mt-8 mb-8 ml-auto max-w-xl">
         <div className="flex items-center gap-3 rounded-2xl border border-emerald-100 bg-white/90 px-4 shadow-sm transition focus-within:border-emerald-400 focus-within:ring-4 focus-within:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-900/90">
           <Search className="shrink-0 text-emerald-600" size={20} />
           <input role="combobox" aria-controls="product-suggestions" value={searchQuery} onFocus={() => setSearchFocused(true)} onBlur={() => setTimeout(() => setSearchFocused(false), 150)} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Search by product, brand, or category" aria-label="Search products" aria-autocomplete="list" aria-expanded={searchFocused && !!normalizedQuery} className="h-12 min-w-0 flex-1 bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 dark:text-slate-100" />
@@ -144,13 +141,13 @@ export default function Products() {
         </div>
         {searchFocused && normalizedQuery && <div id="product-suggestions" role="listbox" aria-label="Product suggestions" className="absolute left-0 right-0 top-[calc(100%+8px)] max-h-96 overflow-y-auto rounded-2xl border border-emerald-100 bg-white p-2 shadow-2xl shadow-slate-900/15 dark:border-slate-700 dark:bg-slate-900">
           {filteredProducts.slice(0, 7).map((product) => <Link key={product._id} role="option" aria-selected="false" href={`/products/${product.id}`} onMouseDown={(event) => event.preventDefault()} onClick={() => setSearchFocused(false)} className="flex items-center justify-between gap-4 rounded-xl px-4 py-3 text-left transition hover:bg-emerald-50 focus:bg-emerald-50 focus:outline-none dark:hover:bg-slate-800 dark:focus:bg-slate-800">
-            <span className="min-w-0"><span className="block truncate text-sm font-semibold text-slate-900 dark:text-slate-100"><HighlightedText text={product.title} query={normalizedQuery} /></span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">{product.brand?.name || "ShopMart"} · {product.category?.name || "Product"}</span></span>
+            <span className="flex min-w-0 items-center gap-3"><ProductImage src={product.imageCover} alt="" aria-hidden="true" className="h-12 w-12 shrink-0 rounded-xl bg-slate-100 object-cover dark:bg-slate-800" /><span className="min-w-0"><span className="block truncate text-sm font-semibold text-slate-900 dark:text-slate-100"><HighlightedText text={product.title} query={normalizedQuery} /></span><span className="mt-1 block truncate text-xs text-slate-500 dark:text-slate-400">{product.brand?.name || "ShopMart"} · {product.category?.name || "Product"}</span></span></span>
             <ArrowUpRight className="shrink-0 text-emerald-600" size={17} />
           </Link>)}
           {!filteredProducts.length && <p className="px-4 py-5 text-sm text-slate-500 dark:text-slate-400">No matching products. Try another name.</p>}
         </div>}
       </div>
-      {!loading && !apiError && normalizedQuery && <p aria-live="polite" className="mx-auto mb-5 max-w-[1680px] text-sm text-slate-500 dark:text-slate-400">{filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found for “{searchQuery.trim()}”</p>}
+      {!loading && normalizedQuery && <p aria-live="polite" className="mx-auto mb-5 max-w-[1680px] text-sm text-slate-500 dark:text-slate-400">{filteredProducts.length} {filteredProducts.length === 1 ? "product" : "products"} found for “{searchQuery.trim()}”</p>}
 
       {/* ===== شبكة المنتجات مع أنيميشن الظهور ===== */}
       <AnimatePresence>
@@ -158,7 +155,7 @@ export default function Products() {
           <div className="flex justify-center items-center h-96 w-full">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
           </div>
-        ) : apiError ? null : (
+        ) : (
           <motion.div
             className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             variants={containerVariants}
