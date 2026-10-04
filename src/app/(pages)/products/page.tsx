@@ -158,12 +158,7 @@ export default function Products() {
           <div className="flex justify-center items-center h-96 w-full">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
           </div>
-        ) : apiError ? (
-          <div role="alert" className="mx-auto flex min-h-72 max-w-2xl translate-y-3 flex-col items-center justify-center gap-3 rounded-3xl border border-red-100 bg-white/90 px-6 text-center shadow-sm">
-            <p className="text-xl font-bold text-gray-900">We couldn&apos;t load the products</p>
-            <p className="text-sm text-gray-600">The service is temporarily unavailable. We&apos;re working to fix it. Please refresh the page in a little while.</p>
-          </div>
-        ) : (
+        ) : apiError ? null : (
           <motion.div
             className="grid grid-cols-1 items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             variants={containerVariants}

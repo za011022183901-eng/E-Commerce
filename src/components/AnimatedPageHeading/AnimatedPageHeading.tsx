@@ -18,7 +18,7 @@ export default function AnimatedPageHeading({ eyebrow, title, accent, subtitle, 
         {eyebrow}
       </span>
 
-      <h1 className={`mt-6 origin-left -rotate-[0.5deg] ${compactTitle ? "text-5xl sm:text-6xl" : "text-7xl sm:text-8xl"} font-black leading-[.95] tracking-[-.055em] text-slate-950 [perspective:900px]`}>
+      <h1 className={`mt-6 origin-left -rotate-[0.5deg] ${compactTitle ? "text-5xl sm:text-6xl" : "text-6xl sm:text-7xl"} font-black leading-[.95] tracking-[-.055em] text-slate-950 [perspective:900px]`}>
         {words.map((word, index) => (
           <span key={`${word}-${index}`} className="mr-[.2em] inline-block origin-bottom">
             {word === accent ? (
@@ -34,7 +34,7 @@ export default function AnimatedPageHeading({ eyebrow, title, accent, subtitle, 
         <div className="h-full w-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400" />
       </div>
 
-      <p className="mt-4 inline-block text-lg leading-8 text-slate-600">{subtitle}</p>
+      <p className="mt-4 inline-block text-base leading-7 text-slate-600">{subtitle}</p>
     </header>
   );
 }
