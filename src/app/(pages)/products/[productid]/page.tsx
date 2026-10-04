@@ -11,7 +11,7 @@ import type { Metadata } from 'next';
 type ProductPageProps = { params: Promise<{ productid: string }> };
 
 async function getProduct(productid: string): Promise<products | null> {
-  const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products/${encodeURIComponent(productid)}`, { next: { revalidate: 600 } });
+  const response = await fetch(`https://ecommerce.routemisr.com/api/v1/products/${encodeURIComponent(productid)}`, { next: { revalidate: 60 * 60 * 24 } });
   if (!response.ok) return null;
   const payload = await response.json();
   return payload?.data ?? null;

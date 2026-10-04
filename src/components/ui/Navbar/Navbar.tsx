@@ -67,7 +67,7 @@ export default function Navbar() {
       onMouseLeave={() => setIsHovering(false)}
       className={`fixed top-0 left-0 w-full z-[1000] transition-transform duration-500 ${
         showNavbar ? "translate-y-0" : "-translate-y-full"
-      } py-4 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 dark:border-slate-800`}
+      } py-4 max-[380px]:py-0 bg-gradient-to-r from-white via-gray-50 to-green-50 shadow-md border-b border-gray-200 dark:from-slate-950 dark:via-slate-900 dark:to-emerald-950 dark:border-slate-800`}
     >
       <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-3 md:gap-4 px-3 sm:px-6">
         {/* ===== Logo + Mobile Icons ===== */}
@@ -80,16 +80,16 @@ export default function Navbar() {
           </Link>
 
           {/* ===== Mobile Menu + Icons ===== */}
-          <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999]">
-            <div className="flex items-center gap-3 sm:gap-5 max-[380px]:relative max-[380px]:pt-12">
-            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:absolute max-[380px]:right-12 max-[380px]:top-0">
+          <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999] max-[380px]:grid max-[380px]:grid-cols-[repeat(3,2.5rem)] max-[380px]:grid-rows-[repeat(2,2.5rem)] max-[380px]:gap-1 max-[380px]:items-center">
+            <div className="flex items-center gap-3 sm:gap-5 max-[380px]:contents">
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:col-start-2 max-[380px]:row-start-1 max-[380px]:h-10 max-[380px]:w-10">
               {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
             </button>
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2 max-[380px]:absolute max-[380px]:right-0 max-[380px]:top-0">
+                  <DropdownMenuTrigger className="outline-0 relative z-[10001] flex items-center gap-2 max-[380px]:col-start-3 max-[380px]:row-start-1 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center max-[380px]:rounded-full max-[380px]:border max-[380px]:border-gray-200 max-[380px]:bg-white/80 max-[380px]:shadow-sm dark:max-[380px]:border-slate-700 dark:max-[380px]:bg-slate-800">
                     <UserIcon className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
                     {(session?.data?.user?.name || userName) && (
                       <span className="hidden sm:inline text-base font-semibold text-gray-700">
@@ -109,7 +109,7 @@ export default function Navbar() {
                 </DropdownMenu>
 
                 {/* Wishlist Icon */}
-                <div className="relative">
+                <div className="relative max-[380px]:col-start-1 max-[380px]:row-start-2 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
                   <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : wishlistData?.count || 0}
                   </Badge>
@@ -125,7 +125,7 @@ export default function Navbar() {
                 </div>
 
                 {/* Cart Icon */}
-                <div className="relative">
+                <div className="relative max-[380px]:col-start-2 max-[380px]:row-start-2 max-[380px]:grid max-[380px]:h-10 max-[380px]:w-10 max-[380px]:place-items-center">
                   <Badge className="absolute -top-3 -right-5 bg-green-500 text-white h-6 w-6 flex items-center justify-center rounded-full text-xs">
                     {loading ? <Loader2 className="animate-spin text-black w-4 h-4" /> : cartData?.numOfCartItems || 0}
                   </Badge>
@@ -142,7 +142,7 @@ export default function Navbar() {
               <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
             ) : null}
             <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:self-end">
+              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:col-start-3 max-[380px]:row-start-2 max-[380px]:h-10 max-[380px]:w-10">
                 <Menu className="h-7 w-7" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-[1001] w-52">

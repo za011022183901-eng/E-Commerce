@@ -1,5 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    staleTimes: {
+      dynamic: 60 * 60 * 24,
+      static: 60 * 60 * 24,
+    },
+  },
   images: {
     remotePatterns: [
       {

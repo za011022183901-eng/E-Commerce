@@ -18,7 +18,7 @@ export default async function BrandDetails({ params }: { params: Params }) {
 
   // ✅ جلب كل المنتجات
   const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", {
-    next: { revalidate: 10 * 60 },
+    next: { revalidate: 60 * 60 * 24 },
   });
   const { data }: { data: Product[] } = await response.json();
 

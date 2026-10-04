@@ -18,7 +18,9 @@ import ProductImage from "@/components/ProductImage/ProductImage";
 import { ArrowUpRight, Search, StarIcon, X } from 'lucide-react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 
-export const dynamic = "force-dynamic";
+const PRODUCTS_CACHE_DURATION = 24 * 60 * 60 * 1000;
+let cachedProducts: ProductsType[] | null = null;
+let productsCachedAt = 0;
 
 function HighlightedText({ text, query }: { text: string; query: string }) {
   const needle = query.trim();
@@ -32,8 +34,8 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 }
 
 export default function Products() {
-  const [products, setProducts] = React.useState<ProductsType[]>([]);
-  const [loading, setLoading] = React.useState(true);
+  const [products, setProducts] = React.useState<ProductsType[]>(() => cachedProducts ?? []);
+  const [loading, setLoading] = React.useState(() => cachedProducts === null);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchFocused, setSearchFocused] = React.useState(false);
 
@@ -43,10 +45,15 @@ export default function Products() {
 
   // جلب البيانات في Client Component
   React.useEffect(() => {
+    if (cachedProducts && Date.now() - productsCachedAt < PRODUCTS_CACHE_DURATION) return;
+
     async function fetchProducts() {
       try {
-        const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", { cache: "force-cache" });
+        const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", { cache: "no-store" });
+        if (!response.ok) throw new Error("Failed to load products");
         const { data }: { data: ProductsType[] } = await response.json();
+        cachedProducts = data;
+        productsCachedAt = Date.now();
         setProducts(data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -151,7 +158,7 @@ export default function Products() {
 
       {/* ===== شبكة المنتجات مع أنيميشن الظهور ===== */}
       <AnimatePresence>
-        {loading ? (
+        {loading && !products.length ? (
           <div className="flex justify-center items-center h-96 w-full">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
           </div>
