@@ -81,14 +81,15 @@ export default function Navbar() {
 
           {/* ===== Mobile Menu + Icons ===== */}
           <div className="flex items-center gap-3 sm:gap-5 md:hidden z-[9999]">
-            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700">
+            <div className="flex items-center gap-3 sm:gap-5 max-[380px]:relative max-[380px]:pt-12">
+            <button type="button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"} className="grid h-11 w-11 place-items-center rounded-full border border-gray-200 bg-white/80 text-emerald-700 shadow-sm transition hover:scale-105 hover:bg-emerald-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 dark:border-slate-700 dark:bg-slate-800 dark:text-amber-300 dark:hover:bg-slate-700 max-[380px]:absolute max-[380px]:right-12 max-[380px]:top-0">
               {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
             </button>
             {isAuthenticated ? (
               <>
                 {/* User Dropdown */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2">
+                  <DropdownMenuTrigger className="outline-0 relative z-[9999] flex items-center gap-2 max-[380px]:absolute max-[380px]:right-0 max-[380px]:top-0">
                     <UserIcon className="w-7 h-7 text-gray-700 hover:text-green-500 transition" />
                     {(session?.data?.user?.name || userName) && (
                       <span className="hidden sm:inline text-base font-semibold text-gray-700">
@@ -140,9 +141,8 @@ export default function Navbar() {
             ) : session.status === "loading" ? (
               <span aria-label="Checking account" className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
             ) : null}
-
             <DropdownMenu>
-              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500">
+              <DropdownMenuTrigger aria-label="Open navigation menu" className="grid h-11 w-11 place-items-center rounded-lg text-gray-700 transition hover:bg-green-50 hover:text-green-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 max-[380px]:self-end">
                 <Menu className="h-7 w-7" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="z-[1001] w-52">
@@ -164,6 +164,7 @@ export default function Navbar() {
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           </div>
         </div>
 

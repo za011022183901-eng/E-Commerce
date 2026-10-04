@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -26,6 +26,22 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const form = useForm<FormFields>({ resolver: zodResolver(formSchema), defaultValues: { email: "", password: "" } });
+  const { reset } = form;
+
+  useEffect(() => {
+    const savedCredentials = sessionStorage.getItem("shopmart-registration-login");
+    if (!savedCredentials) return;
+
+    try {
+      const credentials = JSON.parse(savedCredentials) as FormFields;
+      if (typeof credentials.email !== "string" || typeof credentials.password !== "string") return;
+
+      reset({ email: credentials.email, password: credentials.password });
+      sessionStorage.removeItem("shopmart-registration-login");
+    } catch {
+      // Ignore invalid or outdated registration data.
+    }
+  }, [reset]);
 
   async function onSubmit(values: FormFields) {
     setIsLoading(true); setErrorMessage(null);

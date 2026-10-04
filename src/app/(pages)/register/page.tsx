@@ -85,6 +85,7 @@ export default function RegisterForm() {
       const data = await res.json();
 
       if (res.ok) {
+        sessionStorage.setItem("shopmart-registration-login", JSON.stringify({ email: values.email, password: values.password }));
         toast.success("Welcome aboard! 🎉");
         router.push("/login");
       } else {
