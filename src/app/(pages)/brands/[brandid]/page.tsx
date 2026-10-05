@@ -13,8 +13,8 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export default async function BrandDetails({ params }: { params: Params }) {
-  const { brandid } = params;
+export default async function BrandDetails({ params }: { params: Promise<Params> }) {
+  const { brandid } = await params;
 
   // ✅ جلب كل المنتجات
   const response = await fetch("https://ecommerce.routemisr.com/api/v1/products", {
@@ -74,7 +74,7 @@ export default async function BrandDetails({ params }: { params: Params }) {
           </CardHeader>
 
           <CardContent>
-            <p className="text-sm font-medium text-green-700 dark:text-white">
+            <p className="text-[17px] font-medium text-green-700 dark:text-white">
               Price: {product.price} EGP
             </p>
           </CardContent>
