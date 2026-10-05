@@ -44,56 +44,75 @@ export default function ShoppingCart() {
     }
   }
 
-  async function updatCard(productId: string, count: number) {
-    if (!Number.isInteger(count) || count < 1 || updatingProducts.current.size > 0) return;
-    const currentCart = cartData;
-    const currentItem = currentCart?.data.products.find((item) => item.product._id === productId);
-    if (!currentCart || !currentItem) return;
-    if (currentItem.count === count) {
-      setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
-      return;
-    }
 
-    updatingProducts.current.add(productId);
-    setUpdatId(productId);
-    const optimisticProducts = currentCart.data.products.map((item) =>
-      item.product._id === productId ? { ...item, count } : item
-    );
-    SetCartData({
-      ...currentCart,
-      numOfCartItems: currentCart.numOfCartItems + count - currentItem.count,
-      data: {
-        ...currentCart.data,
-        products: optimisticProducts,
-        totalCartPrice: optimisticProducts.reduce((total, item) => total + item.price * item.count, 0),
-      },
+
+async function updatCard(productId: string, count: number) {
+  // تفعيل حماية إضافية لمنع القيمة الأقل من 1
+  if (!Number.isInteger(count) || count < 1 || updatingProducts.current.has(productId)) return;
+
+  const currentCart = cartData;
+  const currentItem = currentCart?.data.products.find((item) => item.product._id === productId);
+  if (!currentCart || !currentItem) return;
+  if (currentItem.count === count) {
+    setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
+    return;
+  }
+
+  updatingProducts.current.add(productId);
+  setUpdatId(productId);
+
+  const optimisticProducts = currentCart.data.products.map((item) =>
+    item.product._id === productId ? { ...item, count } : item
+  );
+
+  // حساب المجموع الجديد مع حماية numOfCartItems ألا يقل عن 1 أثناء التحديث
+  const newNumOfItems = Math.max(1, currentCart.numOfCartItems + count - currentItem.count);
+
+  SetCartData({
+    ...currentCart,
+    numOfCartItems: newNumOfItems,
+    data: {
+      ...currentCart.data,
+      products: optimisticProducts,
+      totalCartPrice: optimisticProducts.reduce((total, item) => total + item.price * item.count, 0),
+    },
+  });
+
+  try {
+    const response = await fetch(`/api/cart/${encodeURIComponent(productId)}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ count }),
     });
-    try {
-      const response = await fetch(`/api/cart/${encodeURIComponent(productId)}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ count }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to update cart");
-      if (data.status === "success") {
-        SetCartData(data);
-        setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
-        toast.success("Cart quantity updated", cartToastOptions);
-      } else {
-        SetCartData(currentCart);
-        setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
-        toast.error(data.message || "Failed to update cart", cartToastOptions);
-      }
-    } catch (error: any) {
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.message || "Failed to update cart");
+    if (data.status === "success") {
+      SetCartData(data);
+      setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
+      toast.success("Cart quantity updated", cartToastOptions);
+    } else {
       SetCartData(currentCart);
       setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
-      toast.error(error.message || "Something went wrong", cartToastOptions);
-    } finally {
-      updatingProducts.current.delete(productId);
-      setUpdatId(null);
+      toast.error(data.message || "Failed to update cart", cartToastOptions);
     }
+  } catch (error: any) {
+    SetCartData(currentCart);
+    setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
+    toast.error(error.message || "Something went wrong", cartToastOptions);
+  } finally {
+    updatingProducts.current.delete(productId);
+    setUpdatId(null);
   }
+}
+
+
+
+
+
+
+
+
+
 
   function updateQuantityInput(productId: string, value: string) {
     if (!/^\d*$/.test(value)) return;
