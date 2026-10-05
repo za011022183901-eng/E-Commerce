@@ -23,7 +23,7 @@ export default function ProductGallery({ images, title }: GalleryProps) {
 
   return (
     <>
-    <div className="fixed left-0 right-0 top-20 z-20 flex w-full self-start flex-col gap-3 bg-white/95 px-3 py-2 backdrop-blur-sm md:sticky md:left-auto md:right-auto md:top-28 md:z-auto md:w-[55%] md:gap-4 md:bg-transparent md:px-0 md:py-0 md:backdrop-blur-none">
+    <div className="relative flex w-full self-start flex-col gap-3 bg-white/95 px-3 py-2 md:gap-4 md:bg-transparent md:px-0 md:py-0 xl:sticky xl:top-20 xl:w-[55%]">
       
       {/* ===== الصورة الكبيرة فوق ===== */}
       <div className="relative flex w-full items-center justify-center rounded-3xl border border-gray-100/80 bg-gray-50/70 p-3 sm:p-5 md:p-16">
@@ -67,7 +67,6 @@ export default function ProductGallery({ images, title }: GalleryProps) {
       </div>
 
     </div>
-    <div aria-hidden="true" className="h-[400px] sm:h-[500px] md:hidden" />
     </>
   );
 }

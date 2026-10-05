@@ -8,7 +8,8 @@ import { cartContext } from "../context/CartContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-export default function AddToCart({ productId }: { productId: string }) {
+export default function AddToCart({ productId, successToastDuration }: { productId: string; successToastDuration?: number }) {
+  const toastOptions = successToastDuration ? { duration: successToastDuration } : undefined;
   const router = useRouter();
   const [loading, Setloading] = useState(false);
   const { getCart } = useContext(cartContext);
@@ -30,23 +31,23 @@ export default function AddToCart({ productId }: { productId: string }) {
         });
         const data = await response.json();
         if (response.status === 401) {
-          toast.error("Your login session expired. Please sign in again.");
+          toast.error("Your login session expired. Please sign in again.", toastOptions);
           router.push("/login");
           return;
         }
         if (data.status === "success") {
-          toast.success(data.message || "Product added to cart");
+          toast.success(data.message || "Product added to cart", toastOptions);
           await getCart();
         } else {
-          toast.error(data?.message || "Error adding product to cart");
+          toast.error(data?.message || "Error adding product to cart", toastOptions);
         }
       } catch {
-        toast.error("Could not add product to cart. Please try again.");
+        toast.error("Could not add product to cart. Please try again.", toastOptions);
       } finally {
         Setloading(false);
       }
     } else {
-      toast.error("Please login to add products to cart"); // ✅ toast هنا
+      toast.error("Please login to add products to cart", toastOptions); // ✅ toast هنا
       router.push("/login"); // redirect للصفحة login
     }
   }

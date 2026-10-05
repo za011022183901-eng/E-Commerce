@@ -7,7 +7,8 @@ import { useRouter } from "next/navigation";
 import { cartContext } from "@/components/context/CartContext";
 import { useSession } from "next-auth/react";
 
-export default function Whilshit({ productId }: { productId: string }) {
+export default function Whilshit({ productId, successToastDuration }: { productId: string; successToastDuration?: number }) {
+  const toastOptions = successToastDuration ? { duration: successToastDuration } : undefined;
   const { cartData, wishlistData, getWishlist } = useContext(cartContext);
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function Whilshit({ productId }: { productId: string }) {
     if (status === "loading") return;
 
     if (status === "unauthenticated") {
-      toast.error("Please login to manage your wishlist");
+      toast.error("Please login to manage your wishlist", toastOptions);
       router.push("/login"); // 🔹 Redirect للصفحة login
       return;
     }
@@ -52,16 +53,16 @@ export default function Whilshit({ productId }: { productId: string }) {
         });
         const data = await response.json();
         if (response.status === 401) {
-          toast.error("Your login session expired. Please sign in again.");
+          toast.error("Your login session expired. Please sign in again.", toastOptions);
           router.push("/login");
           return;
         }
 
         if (data.status === "success") {
           setLiked(true);
-          toast.success("Added to your wishlist ❤️");
+          toast.success("Added to your wishlist ❤️", toastOptions);
         } else {
-          toast.error(data?.message || "Error");
+          toast.error(data?.message || "Error", toastOptions);
         }
 
       } else {
@@ -72,20 +73,20 @@ export default function Whilshit({ productId }: { productId: string }) {
         });
         const data = await response.json();
         if (response.status === 401) {
-          toast.error("Your login session expired. Please sign in again.");
+          toast.error("Your login session expired. Please sign in again.", toastOptions);
           router.push("/login");
           return;
         }
 
         if (data.status === "success") {
           setLiked(false);
-          toast.success("Removed from your wishlist 💔");
+          toast.success("Removed from your wishlist 💔", toastOptions);
         } else {
-          toast.error(data?.message || "Error");
+          toast.error(data?.message || "Error", toastOptions);
         }
       }
     } catch {
-      toast.error("Connection error!");
+      toast.error("Connection error!", toastOptions);
     } finally {
       setLoading(false);
       await getWishlist();

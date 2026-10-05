@@ -233,13 +233,13 @@ export default function Products() {
                   {/* ===== أزرار التحكم ===== */}
                   <CardFooter className="p-5 pt-4 flex items-center justify-between gap-3 bg-gray-50/30 border-t border-gray-50/50 w-full">
                     <div className="flex-grow flex-1 w-full transition-transform duration-300 group-hover:scale-[1.01] [&>*]:w-full">
-                      <AddToCart productId={product._id} />
+                      <AddToCart productId={product._id} successToastDuration={1000} />
                     </div>
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }} // حركة خفيفة لزر المفضلة
                       className="flex-shrink-0"
                     >
-                      <AddAndRemoveWishlist productId={product._id} />
+                      <AddAndRemoveWishlist productId={product._id} successToastDuration={1000} />
                     </motion.div>
                   </CardFooter>
                 </Card>

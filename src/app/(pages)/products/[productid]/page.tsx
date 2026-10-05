@@ -118,11 +118,11 @@ export default async function ProductsDetails({ params }: ProductPageProps) {
 
             <div className="flex items-center gap-4 w-full">
               <div className="flex-grow flex-1 transition-all duration-300 active:scale-[0.98] [&>*]:w-full [&_button]:h-14 [&_button]:text-base [&_button]:font-bold [&_button]:rounded-2xl [&_button]:bg-green-500 [&_button]:text-white [&_button]:hover:bg-green-600 [&_button]:shadow-lg [&_button]:shadow-green-500/20">
-                <AddToCart productId={product._id} />
+                <AddToCart productId={product._id} successToastDuration={1000} />
               </div>
               
               <div className="flex-shrink-0 transition-all duration-300 active:scale-90 [&_button]:h-14 [&_button]:w-14 [&_button]:rounded-2xl [&_button]:border-gray-200 [&_button]:hover:border-red-200 [&_button]:hover:bg-red-50">
-                <Whilshit productId={product._id} />
+                <Whilshit productId={product._id} successToastDuration={1000} />
               </div>
             </div>
             

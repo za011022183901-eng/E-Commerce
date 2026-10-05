@@ -11,6 +11,8 @@ import Link from "next/link";
 import CeckOut from "@/components/CeckOut/CeckOut";
 import { motion } from "framer-motion";
 
+const cartToastOptions = { duration: 1000 };
+
 export default function ShoppingCart() {
   const { cartData, loading, getCart, SetCartData } = useContext(cartContext);
   const [loadingId, setLoadingId] = useState<null | string>(null);
@@ -31,12 +33,12 @@ export default function ShoppingCart() {
       if (!response.ok) throw new Error(data.message || "Failed to remove product");
       if (data.status === "success") {
         SetCartData(data);
-        toast("Product removed successfully", { icon: "🗑️" });
+        toast("Product removed successfully", { ...cartToastOptions, icon: "🗑️" });
       } else {
-        toast.error(data.message || "Failed to remove product");
+        toast.error(data.message || "Failed to remove product", cartToastOptions);
       }
     } catch (error) {
-      toast.error("Something went wrong. Try again later.");
+      toast.error("Something went wrong. Try again later.", cartToastOptions);
     } finally {
       setLoadingId(null);
     }
@@ -77,15 +79,16 @@ export default function ShoppingCart() {
       if (data.status === "success") {
         SetCartData(data);
         setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(count) }));
+        toast.success("Cart quantity updated", cartToastOptions);
       } else {
         SetCartData(currentCart);
         setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
-        toast.error(data.message || "Failed to update cart");
+        toast.error(data.message || "Failed to update cart", cartToastOptions);
       }
     } catch (error: any) {
       SetCartData(currentCart);
       setQuantityDrafts((drafts) => ({ ...drafts, [productId]: String(currentItem.count) }));
-      toast.error(error.message || "Something went wrong");
+      toast.error(error.message || "Something went wrong", cartToastOptions);
     } finally {
       updatingProducts.current.delete(productId);
       setUpdatId(null);
@@ -117,14 +120,11 @@ export default function ShoppingCart() {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to clear cart");
-      if (data.status === "success") {
-        SetCartData(data);
-        toast("All cart items removed successfully", { icon: "🗑️" });
-      } else {
-        toast.error(data.message || "Failed to clear cart");
-      }
+      SetCartData(data);
+      toast.success("Cart cleared successfully", cartToastOptions);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-      toast.error("Something went wrong. Try again later.");
+      toast.error("Something went wrong. Try again later.", cartToastOptions);
     } finally {
       setClearLoading(false);
       await getCart();
